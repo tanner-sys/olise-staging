@@ -64,13 +64,7 @@ node scripts/build-desktop-manifest.mjs \
 
 Copy `public/desktop/latest.json` into the deployed static site (or automate in CI).
 
-### GitHub secrets
-
-| Secret | Purpose |
-|--------|---------|
-| `TAURI_SIGNING_PRIVATE_KEY` | Contents of `olise.key` (rotate if exposed) |
-| `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | Optional key password |
-| `VITE_*` | Same as web staging |
+For Azure staging manifest mirroring, add repo secrets `AZURE_CREDENTIALS`, `AZURE_CONTAINER_REGISTRY`, and `AZURE_RESOURCE_GROUP` (same as deploy-staging). The `publish-desktop-manifest` workflow runs after each successful desktop release.
 
 Regenerate keys (only if rotating):
 
