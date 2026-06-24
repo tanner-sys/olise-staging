@@ -82,6 +82,7 @@
   /* Layout */
   --sidebar-width: 260px;
   --sidebar-gutter: 10px;
+  --sidebar-peek-hit-width: 40px;
   --app-chrome-height: 48px;
   --content-max: 720px;
   --content-max-runner: 680px;

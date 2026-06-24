@@ -55,7 +55,7 @@
   }
 
   .sidebar-flyout-hit {
-    width: 14px;
+    width: var(--sidebar-peek-hit-width);
     flex-shrink: 0;
     pointer-events: auto;
   }

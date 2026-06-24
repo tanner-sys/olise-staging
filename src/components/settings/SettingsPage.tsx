@@ -10,6 +10,14 @@ import {
   setActiveChild,
 } from '../../lib/children'
 import { ensureChildChatSession } from '../../lib/chatStorage'
+import {
+  clearUnverifiedTotpFactors,
+  listTotpFactors,
+  markProfileMfaEnrolled,
+  startTotpEnrollment,
+  unenrollVerifiedTotp,
+  type MfaEnrollment,
+} from '../../lib/mfa'
 import { supabase } from '../../lib/supabase'
 import type { ChildProfile } from '../../types/database'
 import { getDesktopAppVersion } from '../../platform/updater'
@@ -23,6 +31,7 @@ import {
   emptyChildFormValues,
   type ChildFormValues,
 } from './ChildProfileForm'
+import { MfaEnrollPanel } from './MfaEnrollPanel'
 import './SettingsPage.css'
 
 const stripePortalUrl = import.meta.env.VITE_STRIPE_PORTAL_URL?.trim() || ''
@@ -67,6 +76,10 @@ export function SettingsPage() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
+  const [mfaEnrollment, setMfaEnrollment] = useState<MfaEnrollment | null>(null)
+  const [mfaVerified, setMfaVerified] = useState(false)
+  const [mfaStatusLoading, setMfaStatusLoading] = useState(true)
+
   const childList = useMemo(() => activeChildren(children), [children])
   const editingChild =
     childEditor.type === 'edit'
@@ -80,6 +93,41 @@ export function SettingsPage() {
   useEffect(() => {
     void getDesktopAppVersion().then(setAppVersion)
   }, [])
+
+  useEffect(() => {
+    let cancelled = false
+
+    void (async () => {
+      if (!user) {
+        setMfaVerified(false)
+        setMfaStatusLoading(false)
+        return
+      }
+
+      setMfaStatusLoading(true)
+      try {
+        const factors = await listTotpFactors()
+        if (cancelled) return
+        const verified = factors.some((factor) => factor.status === 'verified')
+        setMfaVerified(verified || Boolean(profile?.mfa_enrolled_at))
+
+        if (verified && !profile?.mfa_enrolled_at) {
+          await markProfileMfaEnrolled(user.id, true)
+          await refreshProfile()
+        }
+      } catch {
+        if (!cancelled) {
+          setMfaVerified(Boolean(profile?.mfa_enrolled_at))
+        }
+      } finally {
+        if (!cancelled) setMfaStatusLoading(false)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [user, profile?.mfa_enrolled_at, refreshProfile])
 
   async function saveAccountName() {
     if (!supabase || !user || !accountName.trim()) return
@@ -205,31 +253,54 @@ export function SettingsPage() {
     }
   }
 
-  async function enrollMfa() {
-    if (!supabase || !user) return
+  async function startMfaEnroll() {
+    if (!user) return
     setSecurityBusy(true)
     setSecurityMessage(null)
     setSecurityError(false)
     try {
-      const { data, error } = await supabase.auth.mfa.enroll({
-        factorType: 'totp',
-        friendlyName: 'Authenticator app',
-      })
-      if (error) throw error
-
-      if (data?.totp?.uri) {
-        await supabase
-          .from('caregiver_profiles')
-          .update({ mfa_enrolled_at: new Date().toISOString() })
-          .eq('id', user.id)
-        await refreshProfile()
-        setSecurityMessage(
-          'Authenticator enrollment started. Scan the QR code in your app, then verify when prompted on next login.',
-        )
-      }
+      const enrollment = await startTotpEnrollment()
+      setMfaEnrollment(enrollment)
     } catch (err) {
       setSecurityError(true)
       setSecurityMessage(err instanceof Error ? err.message : 'MFA enrollment failed.')
+    } finally {
+      setSecurityBusy(false)
+    }
+  }
+
+  async function cancelMfaEnroll() {
+    setMfaEnrollment(null)
+    setSecurityMessage(null)
+    setSecurityError(false)
+    try {
+      await clearUnverifiedTotpFactors()
+    } catch {
+      // Best-effort cleanup after cancel.
+    }
+  }
+
+  async function completeMfaEnroll() {
+    setMfaEnrollment(null)
+    setMfaVerified(true)
+    setSecurityError(false)
+    setSecurityMessage('Multi-factor authentication is enabled.')
+  }
+
+  async function removeMfa() {
+    if (!user) return
+    setSecurityBusy(true)
+    setSecurityMessage(null)
+    setSecurityError(false)
+    try {
+      await unenrollVerifiedTotp()
+      await markProfileMfaEnrolled(user.id, false)
+      await refreshProfile()
+      setMfaVerified(false)
+      setSecurityMessage('Multi-factor authentication has been removed.')
+    } catch (err) {
+      setSecurityError(true)
+      setSecurityMessage(err instanceof Error ? err.message : 'Could not remove MFA.')
     } finally {
       setSecurityBusy(false)
     }
@@ -623,22 +694,44 @@ export function SettingsPage() {
             <span className="settings-row-label">Multi-factor authentication</span>
             <span
               className={`settings-status ${
-                profile?.mfa_enrolled_at ? 'settings-status--ok' : 'settings-status--pending'
+                mfaVerified ? 'settings-status--ok' : 'settings-status--pending'
               }`}
             >
-              {profile?.mfa_enrolled_at ? 'Enrolled' : 'Not enrolled'}
+              {mfaStatusLoading ? 'Checking…' : mfaVerified ? 'Enrolled' : 'Not enrolled'}
             </span>
           </div>
-          {!profile?.mfa_enrolled_at && (
+
+          {!mfaEnrollment && !mfaVerified && !mfaStatusLoading && (
             <div className="settings-actions">
               <button
                 type="button"
                 className="settings-btn settings-btn--secondary"
-                onClick={enrollMfa}
+                onClick={() => void startMfaEnroll()}
                 disabled={securityBusy}
               >
                 <Shield size={14} strokeWidth={1.75} />
-                <span>{securityBusy ? 'Setting up…' : 'Set up MFA'}</span>
+                <span>{securityBusy ? 'Starting…' : 'Set up MFA'}</span>
+              </button>
+            </div>
+          )}
+
+          {mfaEnrollment && (
+            <MfaEnrollPanel
+              enrollment={mfaEnrollment}
+              onComplete={() => void completeMfaEnroll()}
+              onCancel={() => void cancelMfaEnroll()}
+            />
+          )}
+
+          {mfaVerified && !mfaEnrollment && (
+            <div className="settings-actions">
+              <button
+                type="button"
+                className="settings-btn settings-btn--ghost"
+                onClick={() => void removeMfa()}
+                disabled={securityBusy}
+              >
+                {securityBusy ? 'Removing…' : 'Remove MFA'}
               </button>
             </div>
           )}

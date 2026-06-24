@@ -90,7 +90,7 @@ jobs:
         with:
           tagName: desktop-v${{ steps.version.outputs.value }}
           releaseName: 'Olise Desktop v${{ steps.version.outputs.value }}'
-          releaseBody: 'Desktop v0.1.2 — pinned/hover sidebar, drag resize, jump-to-bottom, click-outside peek dismiss, persistent header and chat scroll.'
+          releaseBody: 'Desktop v0.1.3 — MFA enroll with QR + verify in Settings, wider sidebar hover zone, and Tier 1 polish.'
           releaseDraft: false
           prerelease: false
           args: --target ${{ matrix.target }}

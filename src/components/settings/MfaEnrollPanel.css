@@ -1,0 +1,117 @@
+.mfa-enroll-panel {
+  margin-top: var(--space-5);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border-emphasis);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-overlay-soft);
+}
+
+.mfa-enroll-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.mfa-enroll-intro {
+  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-subtle);
+}
+
+.mfa-enroll-qr-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-5);
+}
+
+.mfa-enroll-qr {
+  display: inline-flex;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--color-border-default);
+}
+
+.mfa-enroll-qr svg {
+  display: block;
+  width: 180px;
+  height: 180px;
+}
+
+.mfa-enroll-fallback {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.mfa-enroll-secret {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.mfa-enroll-secret-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-placeholder);
+}
+
+.mfa-enroll-secret-value {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  font-family: ui-monospace, monospace;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  word-break: break-all;
+}
+
+.mfa-enroll-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.mfa-enroll-code-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.mfa-enroll-code-input {
+  width: 100%;
+  max-width: 200px;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border-emphasis);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-family: ui-monospace, monospace;
+  font-size: var(--font-size-lg);
+  letter-spacing: 0.2em;
+  color: var(--color-text-primary);
+}
+
+.mfa-enroll-code-input:focus {
+  outline: none;
+  border-color: var(--color-border-emphasis);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
+}
+
+.mfa-enroll-error {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: #b91c1c;
+}
+
+.mfa-enroll-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}

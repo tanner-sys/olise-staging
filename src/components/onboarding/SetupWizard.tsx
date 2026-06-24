@@ -9,6 +9,7 @@ import {
 } from '../../lib/constants'
 import { activeChildren, getPlaceholderChild, setActiveChild } from '../../lib/children'
 import { ensureChildChatSession } from '../../lib/chatStorage'
+import { startTotpEnrollment, clearUnverifiedTotpFactors } from '../../lib/mfa'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import '../auth/AuthLayout.css'
@@ -56,27 +57,18 @@ export function SetupWizard() {
     setMfaMessage(null)
     setSubmitting(true)
     try {
-      const { data, error: enrollError } = await supabase.auth.mfa.enroll({
-        factorType: 'totp',
-        friendlyName: 'Authenticator app',
-      })
-      if (enrollError) throw enrollError
-
-      if (data?.totp?.uri) {
-        setMfaMessage(
-          'Scan the QR code in your authenticator app, then verify in Settings when ready. You can continue without verifying now.',
-        )
-        if (user) {
-          await supabase
-            .from('caregiver_profiles')
-            .update({ mfa_enrolled_at: new Date().toISOString() })
-            .eq('id', user.id)
-          await refreshProfile()
-        }
-      }
+      await startTotpEnrollment()
+      setMfaMessage(
+        'Authenticator setup started. Open Settings → Security to scan the QR code and verify your code.',
+      )
       setStep('add-child')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'MFA enrollment failed. You can skip for now.')
+      try {
+        await clearUnverifiedTotpFactors()
+      } catch {
+        // Ignore cleanup errors on failed enroll.
+      }
     } finally {
       setSubmitting(false)
     }
