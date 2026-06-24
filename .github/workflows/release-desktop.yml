@@ -90,7 +90,7 @@ jobs:
         with:
           tagName: desktop-v${{ steps.version.outputs.value }}
           releaseName: 'Olise Desktop v${{ steps.version.outputs.value }}'
-          releaseBody: 'Desktop release for Olise caregivers.'
+          releaseBody: 'Desktop v0.1.1 — in-app update flow test. Settings shows app version on desktop.'
           releaseDraft: false
           prerelease: false
           args: --target ${{ matrix.target }}

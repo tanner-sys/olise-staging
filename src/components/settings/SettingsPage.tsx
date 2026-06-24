@@ -12,6 +12,7 @@ import {
 import { ensureChildChatSession } from '../../lib/chatStorage'
 import { supabase } from '../../lib/supabase'
 import type { ChildProfile } from '../../types/database'
+import { getDesktopAppVersion } from '../../platform/updater'
 import { StatePanel } from '../state/StatePanel'
 import '../ProgramRunner.css'
 import '../auth/AuthLayout.css'
@@ -56,6 +57,8 @@ export function SettingsPage() {
   const [childError, setChildError] = useState<string | null>(null)
   const [childSaving, setChildSaving] = useState(false)
 
+  const [appVersion, setAppVersion] = useState<string | null>(null)
+
   const [securityBusy, setSecurityBusy] = useState(false)
   const [securityMessage, setSecurityMessage] = useState<string | null>(null)
   const [securityError, setSecurityError] = useState(false)
@@ -73,6 +76,10 @@ export function SettingsPage() {
   useEffect(() => {
     setAccountName(profile?.display_name ?? '')
   }, [profile?.display_name])
+
+  useEffect(() => {
+    void getDesktopAppVersion().then(setAppVersion)
+  }, [])
 
   async function saveAccountName() {
     if (!supabase || !user || !accountName.trim()) return
@@ -645,6 +652,10 @@ export function SettingsPage() {
             </p>
           )}
         </section>
+
+        {appVersion && (
+          <p className="settings-app-version">Olise desktop v{appVersion}</p>
+        )}
       </div>
     </div>
   )
