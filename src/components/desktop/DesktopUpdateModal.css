@@ -1,0 +1,107 @@
+.desktop-update-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.desktop-update-modal {
+  width: min(100%, 420px);
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+}
+
+.desktop-update-title {
+  margin: 0 0 var(--space-3);
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+
+.desktop-update-version,
+.desktop-update-notes {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-muted);
+}
+
+.desktop-update-progress {
+  margin-bottom: var(--space-5);
+}
+
+.desktop-update-progress-bar {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-muted);
+  overflow: hidden;
+}
+
+.desktop-update-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ea580c, #f59e0b);
+  transition: width 0.2s ease;
+}
+
+.desktop-update-progress-label {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-subtle);
+}
+
+.desktop-update-error {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  color: #991b1b;
+}
+
+.desktop-update-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.desktop-update-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px var(--space-6);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.desktop-update-btn--primary {
+  border: 1px solid #c2410c;
+  background: #ea580c;
+  color: #fff;
+}
+
+.desktop-update-btn--primary:hover:not(:disabled) {
+  background: #c2410c;
+}
+
+.desktop-update-btn--primary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.desktop-update-btn--ghost {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.desktop-update-btn--ghost:hover:not(:disabled) {
+  text-decoration: underline;
+}

@@ -1,0 +1,18 @@
+.sidebar-update-btn {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid #fdba74;
+  border-radius: var(--radius-pill);
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background var(--duration-fast), border-color var(--duration-fast);
+}
+
+.sidebar-update-btn:hover {
+  background: #ffedd5;
+  border-color: #fb923c;
+}

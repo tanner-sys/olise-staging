@@ -1,0 +1,189 @@
+{
+  "project": {
+    "name": "Olise",
+    "description": "Olise (T3 Labs) — caregiver pediatric behavioral health platform. Phase 0 buildout: chat, auth, programs, routines, Supabase, Azure brain.",
+    "content": "## Scope\n\nThree repos: `olise-ui`, `olise-supabase`, `olise-brain`.\n\n## Current state\n\n- Auth + consent + setup wizard working on staging\n- Chat MVP: stream via brain, markdown, Supabase sessions/messages, sidebar recents\n- Model chain: Sonnet → Haiku → OpenAI (OpenAI tier pending keys)\n- Olise rebrand in UI (Azure/GitHub names still legacy `nira-*`)\n\n## Domains\n\n- Target: `olise.co`, `staging.olise.co`"
+  },
+  "issues": [
+    {
+      "title": "Wire OpenAI / Azure OpenAI fallback on brain (tier 3)",
+      "description": "Add `OPENAI_API_KEY` or Azure OpenAI env vars to `nira-brain-staging` container app. Verify `/ready` shows `openai: configured`. Test failover when Claude is overloaded.",
+      "priority": 2,
+      "labels": ["brain", "infra"]
+    },
+    {
+      "title": "Personalized brain prompts (caregiver profile + children)",
+      "description": "Load `caregiver_profiles` and `children` from Supabase in brain. Use `buildSystemPrompt()` with display name and child context. No session DB checks — keep simple proxy.",
+      "priority": 2,
+      "labels": ["brain"]
+    },
+    {
+      "title": "Log model provider + model id per chat response",
+      "description": "Brain logs which tier served the request (sonnet/haiku/openai). Optional: add `model_provider` + `model_id` columns on `messages` table for analytics.",
+      "priority": 4,
+      "labels": ["brain", "supabase"]
+    },
+    {
+      "title": "Programs catalog: read from Supabase instead of static TS",
+      "description": "Replace `programs.ts` / `getProgram()` with Supabase queries. Seed data already in `programs` table. Update ProgramRunner and sidebar.",
+      "priority": 2,
+      "labels": ["ui", "supabase"]
+    },
+    {
+      "title": "Routines catalog: read from Supabase instead of static TS",
+      "description": "Replace `routines.ts` / `getRoutine()` with Supabase queries. Seed data already in `routines` table.",
+      "priority": 2,
+      "labels": ["ui", "supabase"]
+    },
+    {
+      "title": "Sync program progress to Supabase",
+      "description": "Persist `program_progress` to `program_progress` table instead of local storage only (`olise-program-progress`). Load on app start.",
+      "priority": 2,
+      "labels": ["ui", "supabase"]
+    },
+    {
+      "title": "Sync routine check-ins to Supabase",
+      "description": "Persist routine history to `check_in_entries` table instead of local storage only (`olise-routine-history`).",
+      "priority": 2,
+      "labels": ["ui", "supabase"]
+    },
+    {
+      "title": "Deploy staging UI (olise-ui)",
+      "description": "Host `dist/` on Azure Static Web Apps or similar. Configure build-time env: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_BRAIN_URL`.",
+      "priority": 2,
+      "labels": ["ui", "infra"]
+    },
+    {
+      "title": "DNS: staging.olise.co + Supabase auth redirect URLs",
+      "description": "Point `staging.olise.co` at staging UI. Add redirect URLs in Supabase dashboard for signup/verify flows.",
+      "priority": 3,
+      "labels": ["infra", "supabase"]
+    },
+    {
+      "title": "Chat E2E QA pass (when Anthropic available)",
+      "description": "Verify: send → stream → markdown; refresh preserves thread; sidebar recents; reopen session; overload triggers Haiku fallback.",
+      "priority": 2,
+      "labels": ["qa", "ui", "brain"]
+    },
+    {
+      "title": "Push repos to GitHub (olise-ui, olise-supabase, olise-brain)",
+      "description": "Create three GitHub repos under T3 Labs org. Push local code. Optional: rename remotes from legacy `nira-*` folder names.",
+      "priority": 3,
+      "labels": ["infra"]
+    },
+    {
+      "title": "GitHub Actions: brain staging deploy secrets",
+      "description": "Configure `AZURE_CREDENTIALS`, `AZURE_CONTAINER_APP_NAME`, `AZURE_RESOURCE_GROUP`, `ANTHROPIC_API_KEY` in GitHub staging environment for `olise-brain` workflows.",
+      "priority": 3,
+      "labels": ["infra", "brain"]
+    },
+    {
+      "title": "GitHub Actions: Supabase migration CI",
+      "description": "Configure `SUPABASE_ACCESS_TOKEN` + `SUPABASE_PROJECT_REF` for staging/production migrate workflows in `olise-supabase`.",
+      "priority": 3,
+      "labels": ["infra", "supabase"]
+    },
+    {
+      "title": "Provision Supabase production project",
+      "description": "Create `olise-prod` with HIPAA config. No real PHI until launch. Run migrations. Do not point local dev at prod.",
+      "priority": 3,
+      "labels": ["infra", "supabase"]
+    },
+    {
+      "title": "Provision Azure brain production",
+      "description": "Container App `olise-brain-prod` (or rename from legacy). ACR, secrets, manual deploy workflow.",
+      "priority": 3,
+      "labels": ["infra", "brain"]
+    },
+    {
+      "title": "DNS: olise.co production (reserved, no traffic pre-launch)",
+      "description": "Reserve production DNS. Wire UI + brain custom domains when ready for launch.",
+      "priority": 4,
+      "labels": ["infra"]
+    },
+    {
+      "title": "Rename Azure resources from nira-* to olise-*",
+      "description": "Optional cleanup: `nira-brain-staging`, `nira-staging-rg`, `nirabrainstgacr`, Docker image names. Document migration — not blocking.",
+      "priority": 4,
+      "labels": ["infra"]
+    },
+    {
+      "title": "Rename GitHub repos to olise-*",
+      "description": "Rename `nira-chat-ui` → `olise-ui`, `nira-supabase` → `olise-supabase`, `nira-brain` → `olise-brain`. Update local remotes.",
+      "priority": 4,
+      "labels": ["infra"]
+    },
+    {
+      "title": "Safety pipeline: crisis detection in chat path",
+      "description": "Re-enable crisis keyword stub in brain chat flow. Persist `crisis_events`. UI crisis message styling exists.",
+      "priority": 4,
+      "labels": ["brain", "safety"]
+    },
+    {
+      "title": "RAG / knowledge retrieval (pgvector)",
+      "description": "Wire `knowledge_documents` + `knowledge_chunks` into brain chat. Embeddings via Azure OpenAI. Deferred from Phase 0 MVP.",
+      "priority": 4,
+      "labels": ["brain", "supabase"]
+    },
+    {
+      "title": "Assessments foundation — UI + storage",
+      "description": "Schema exists for assessments. Build UI flows and brain integration when product scope is locked.",
+      "priority": 4,
+      "labels": ["ui", "supabase"]
+    },
+    {
+      "title": "Eval harness for chat quality",
+      "description": "Regression tests for prompts, safety, and model fallback. Run against staging brain.",
+      "priority": 4,
+      "labels": ["brain", "qa"]
+    },
+    {
+      "title": "Supabase BAA + HIPAA compliance checklist",
+      "description": "Execute Supabase BAA. Verify Team plan + HIPAA add-on on staging/prod. Document in INFRA.",
+      "priority": 3,
+      "labels": ["infra", "supabase", "compliance"]
+    },
+    {
+      "title": "API key rotation policy",
+      "description": "Document and schedule rotation for Anthropic, OpenAI, Supabase service role. User deferred until build stabilizes.",
+      "priority": 4,
+      "labels": ["infra", "security"]
+    },
+    {
+      "title": "Capacitor sync after Olise bundle id change",
+      "description": "Run `npm run cap:sync` before next iOS/Android build. Bundle id now `co.olise.app`.",
+      "priority": 3,
+      "labels": ["ui", "mobile"]
+    },
+    {
+      "title": "Optional: show fallback model indicator in chat UI",
+      "description": "When brain serves Haiku/OpenAI tier, show subtle footer e.g. 'Using backup assistant'. Requires SSE meta event from brain.",
+      "priority": 4,
+      "labels": ["ui", "brain"]
+    },
+    {
+      "title": "Child memories pipeline",
+      "description": "`child_memories` table exists. Design when/how assistant extracts and confirms memories from chat.",
+      "priority": 4,
+      "labels": ["brain", "supabase"]
+    },
+    {
+      "title": "Conversation summaries",
+      "description": "Populate `conversation_summaries` for long threads. Background job or on-session-close in brain.",
+      "priority": 4,
+      "labels": ["brain", "supabase"]
+    },
+    {
+      "title": "Programs/routines admin or CMS",
+      "description": "Future: edit catalog without code deploy. Supabase as source of truth is prerequisite (separate tickets).",
+      "priority": 4,
+      "labels": ["ui", "supabase"]
+    },
+    {
+      "title": "Production launch: traffic + monitoring",
+      "description": "Enable prod traffic, health checks, alerting on brain `/health` and Supabase. Phase 0 exit criteria.",
+      "priority": 3,
+      "labels": ["infra", "launch"]
+    }
+  ]
+}

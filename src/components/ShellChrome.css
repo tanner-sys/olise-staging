@@ -1,0 +1,9 @@
+.platform-desktop .top-bar,
+.platform-ios .top-bar,
+.platform-android .top-bar {
+  padding-top: calc(var(--space-4) + var(--safe-top));
+}
+
+.platform-desktop .pane-btn {
+  margin-left: 0;
+}

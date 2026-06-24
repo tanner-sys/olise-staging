@@ -1,0 +1,124 @@
+:root {
+  /* Colors — background */
+  --color-bg-app: #f7f6f3;
+  --color-bg-surface: #fff;
+  --color-bg-muted: #f3f2ef;
+  --color-bg-subtle: #faf9f7;
+  --color-bg-search: #f7f6f3;
+  --color-bg-overlay: rgba(255, 255, 255, 0.85);
+  --color-bg-overlay-soft: rgba(255, 255, 255, 0.65);
+  --color-bg-hover: rgba(0, 0, 0, 0.04);
+  --color-bg-hover-strong: rgba(0, 0, 0, 0.05);
+  --color-bg-active: rgba(0, 0, 0, 0.06);
+
+  /* Colors — text */
+  --color-text-primary: #2c2a27;
+  --color-text-secondary: #3d3a36;
+  --color-text-body: #4a4742;
+  --color-text-muted: #6b6760;
+  --color-text-subtle: #8a8680;
+  --color-text-placeholder: #a8a49c;
+  --color-text-faint: #b0aca4;
+
+  /* Colors — borders */
+  --color-border-subtle: rgba(0, 0, 0, 0.05);
+  --color-border-default: rgba(0, 0, 0, 0.06);
+  --color-border-medium: rgba(0, 0, 0, 0.07);
+  --color-border-strong: rgba(0, 0, 0, 0.08);
+  --color-border-emphasis: rgba(0, 0, 0, 0.1);
+
+  /* Colors — accents */
+  --color-accent-warm: #d97706;
+  --color-accent-warm-bg: #fffaf5;
+  --color-accent-warm-border: rgba(217, 119, 6, 0.2);
+  --color-accent-blue: #2563eb;
+  --color-accent-blue-dark: #1e3a8a;
+  --color-accent-blue-bg: #eff6ff;
+  --color-accent-blue-light: #93c5fd;
+  --color-accent-green: #16a34a;
+  --color-accent-green-bg: #ecfdf3;
+
+  /* Colors — macOS window dots */
+  --color-dot-red: #ff5f57;
+  --color-dot-yellow: #febc2e;
+  --color-dot-green: #28c840;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-base: 12px;
+  --font-size-md: 13px;
+  --font-size-lg: 14px;
+  --font-size-xl: 16px;
+  --font-size-greeting: clamp(28px, 3.5vw, 36px);
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --line-height-tight: 1.05;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.4;
+  --line-height-relaxed: 1.45;
+  --line-height-loose: 1.5;
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-snug: -0.01em;
+
+  /* Spacing */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 10px;
+  --space-6: 12px;
+  --space-7: 14px;
+  --space-8: 16px;
+  --space-9: 18px;
+  --space-10: 20px;
+  --space-12: 24px;
+  --space-16: 32px;
+  --space-18: 36px;
+
+  /* Layout */
+  --sidebar-width: 248px;
+  --sidebar-gutter: 10px;
+  --content-max: 720px;
+  --content-max-runner: 680px;
+  --content-gutter: 20px;
+  --breakpoint-mobile: 767px;
+  --breakpoint-sm: 600px;
+
+  /* Radii */
+  --radius-sm: 5px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-3xl: 14px;
+  --radius-4xl: 16px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.03), 0 6px 20px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-sidebar: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 24px rgba(0, 0, 0, 0.06);
+
+  /* Z-index */
+  --z-sidebar-backdrop: 40;
+  --z-sidebar: 50;
+  --z-top-bar: 60;
+
+  /* Motion */
+  --duration-fast: 0.15s;
+  --duration-normal: 0.2s;
+  --duration-slow: 0.22s;
+  --duration-progress: 0.25s;
+  --ease-default: ease;
+
+  /* Safe areas (iOS notch, home indicator) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}

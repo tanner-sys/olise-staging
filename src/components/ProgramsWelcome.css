@@ -1,0 +1,51 @@
+.programs-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 420px;
+  margin: 0 auto;
+  gap: 12px;
+}
+
+.programs-welcome-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--color-bg-surface);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  color: var(--color-text-muted);
+  box-shadow: 0 4px 16px var(--color-bg-hover);
+}
+
+.programs-welcome-title {
+  margin: 4px 0 0;
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.programs-welcome-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.programs-welcome-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--color-border-default);
+  font-size: var(--font-size-base);
+  color: var(--color-text-subtle);
+}
