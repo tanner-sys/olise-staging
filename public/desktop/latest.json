@@ -1,51 +1,51 @@
 {
-  "version": "0.1.2",
-  "notes": "Desktop v0.1.2 — pinned/hover sidebar, drag resize, jump-to-bottom, click-outside peek dismiss, persistent header and chat scroll.",
-  "pub_date": "2026-06-24T15:31:45.284Z",
+  "version": "0.1.3",
+  "notes": "Desktop v0.1.3 — MFA enroll with QR + verify in Settings, wider sidebar hover zone, and Tier 1 polish.",
+  "pub_date": "2026-06-24T18:51:28.337Z",
   "platforms": {
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWdWVGxhTCtJRjVLV2ZpNkdBYkhxY3hrZCt0U1U5N0hMTWYwMXh0cE1Qam1TaDUyd1BTdzcvcFNZemhmT3R4ODdMS3NQWWk0MmpkT2ZJSXoyd3pOcGdJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE0ODg5CWZpbGU6T2xpc2UuYXBwLnRhci5negpxT3BpcUlrK05OSXR5cDFPQXA0WjFua1N3d001Qy93ZTBVaUtDMkc2Mi9yQnI0MExuYkYrNHd5NWlua1hzWDdWTVJPOTRhWWI3TlJHeVoyU2pON1JDdz09Cg==",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW9RMDF4ZUlvclBaUzZJTllUTkxkVzdHU3JzQWptYytUWlljekZCWFlldG1raGx3ZGc0Y2hBRTIwc2ZYTjV4MENkdTI0Y0ZYZzQvdDRMQ1dWSnBsMXdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2NzkzCWZpbGU6T2xpc2UuYXBwLnRhci5negppc0k3YU56WTVRRlpXZDBrVFBqbU9nYVNsZ0NSSlQ3TlQrWThNN3RrVkJINzR6N0d5RHZTOGhKK0xYbkd6TVZwWTNXV2tSZWw5Rlo2dW5sS0lZTzBBUT09Cg==",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_x64.app.tar.gz"
     },
     "darwin-x86_64-app": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWdWVGxhTCtJRjVLV2ZpNkdBYkhxY3hrZCt0U1U5N0hMTWYwMXh0cE1Qam1TaDUyd1BTdzcvcFNZemhmT3R4ODdMS3NQWWk0MmpkT2ZJSXoyd3pOcGdJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE0ODg5CWZpbGU6T2xpc2UuYXBwLnRhci5negpxT3BpcUlrK05OSXR5cDFPQXA0WjFua1N3d001Qy93ZTBVaUtDMkc2Mi9yQnI0MExuYkYrNHd5NWlua1hzWDdWTVJPOTRhWWI3TlJHeVoyU2pON1JDdz09Cg==",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW9RMDF4ZUlvclBaUzZJTllUTkxkVzdHU3JzQWptYytUWlljekZCWFlldG1raGx3ZGc0Y2hBRTIwc2ZYTjV4MENkdTI0Y0ZYZzQvdDRMQ1dWSnBsMXdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2NzkzCWZpbGU6T2xpc2UuYXBwLnRhci5negppc0k3YU56WTVRRlpXZDBrVFBqbU9nYVNsZ0NSSlQ3TlQrWThNN3RrVkJINzR6N0d5RHZTOGhKK0xYbkd6TVZwWTNXV2tSZWw5Rlo2dW5sS0lZTzBBUT09Cg==",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_x64.app.tar.gz"
     },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWxHTkhWbUluU3BTckEwVDhoRUNVMkxQSDZPQll4VHp3a2tvZ210alBVcSt5aTNQSU02OUJFdjBHNzVVQzRETWNweWJXTFgybUZVSk1OMzJoUjBReWdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE0OTUwCWZpbGU6T2xpc2UuYXBwLnRhci5negpkUFJlY3B0dlFhZGk3QVNlSm5EYmhjMC9NQWtDOUREaExtRXBMdytPSXZIRFRrYkpERFdINlYwRjFXUWRncW5vYzZKUDhqOVFYQjluZHJ5OVRkcUlDZz09Cg==",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW5YWWlEYjFyVU5KanZRam9kSGllMmE4R0lpZXMrRXR2S3pjYkVWOTZyOE9WUngrZ09vNVBGcno2K1VCOVVHek9XWVNITG1XY1B6aWxodm1RL3d6R0E0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2ODQxCWZpbGU6T2xpc2UuYXBwLnRhci5negpZVDZ6TTR4a0JOeC9oWW4zYWRzK0dabVhnRUV2TDcrY09zbVFYREVhQ0NnaHlqQTM0UHZWVm55ZDFXWUdsZXNPdjZ2T3VSNDl3S1lqK1hoL1J5a01DQT09Cg==",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_aarch64.app.tar.gz"
     },
     "darwin-aarch64-app": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWxHTkhWbUluU3BTckEwVDhoRUNVMkxQSDZPQll4VHp3a2tvZ210alBVcSt5aTNQSU02OUJFdjBHNzVVQzRETWNweWJXTFgybUZVSk1OMzJoUjBReWdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE0OTUwCWZpbGU6T2xpc2UuYXBwLnRhci5negpkUFJlY3B0dlFhZGk3QVNlSm5EYmhjMC9NQWtDOUREaExtRXBMdytPSXZIRFRrYkpERFdINlYwRjFXUWRncW5vYzZKUDhqOVFYQjluZHJ5OVRkcUlDZz09Cg==",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW5YWWlEYjFyVU5KanZRam9kSGllMmE4R0lpZXMrRXR2S3pjYkVWOTZyOE9WUngrZ09vNVBGcno2K1VCOVVHek9XWVNITG1XY1B6aWxodm1RL3d6R0E0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2ODQxCWZpbGU6T2xpc2UuYXBwLnRhci5negpZVDZ6TTR4a0JOeC9oWW4zYWRzK0dabVhnRUV2TDcrY09zbVFYREVhQ0NnaHlqQTM0UHZWVm55ZDFXWUdsZXNPdjZ2T3VSNDl3S1lqK1hoL1J5a01DQT09Cg==",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_aarch64.app.tar.gz"
     },
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTXFMNjJMWHgvRWVXZHhTdmpuRHRzM2JlMGl3OU9QZ1lScS9WREd3NzJyQk5mVXEyRlpnd3huTlJpY0MwTlBwWk1wbkdNQ2t2WGJacXFWaXFudHFad1FZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE1MDYyCWZpbGU6T2xpc2VfMC4xLjJfYW1kNjQuQXBwSW1hZ2UKamNsNnQzZEdsVXdWVDlHaUNnUmNVZlE1UkFnTEthaXFkSklvMm1BRk5VZzlNU1ZwbDZQKzRacUJoR2tGL1hMS2VPZ0phSm9sTG9oMnorSjFKa3hlRFE9PQo=",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_0.1.2_amd64.AppImage"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWd0U2VPN1ZhVnovNjBybVdOME1vb3dQM1VVdkVTcFNUUXVyU3ppZDhEa2MwQlFwem1VN0h4Q3RGWnZzWktRYTA5N3pMYkpQcmtUaUM0QjZManh3cmdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2OTc3CWZpbGU6T2xpc2VfMC4xLjNfYW1kNjQuQXBwSW1hZ2UKVE0yV1RpRmtzeS9PVkZ0bGVtQjU1OXRZeStFOXlVelVWcXB4YktyUjBXRkQ3UDBDWWIzeENTb2k3TTFHalJFUjBSQm1VMWljNTFXcU1sRjdyTDVNQUE9PQo=",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_0.1.3_amd64.AppImage"
     },
     "linux-x86_64-appimage": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTXFMNjJMWHgvRWVXZHhTdmpuRHRzM2JlMGl3OU9QZ1lScS9WREd3NzJyQk5mVXEyRlpnd3huTlJpY0MwTlBwWk1wbkdNQ2t2WGJacXFWaXFudHFad1FZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE1MDYyCWZpbGU6T2xpc2VfMC4xLjJfYW1kNjQuQXBwSW1hZ2UKamNsNnQzZEdsVXdWVDlHaUNnUmNVZlE1UkFnTEthaXFkSklvMm1BRk5VZzlNU1ZwbDZQKzRacUJoR2tGL1hMS2VPZ0phSm9sTG9oMnorSjFKa3hlRFE9PQo=",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_0.1.2_amd64.AppImage"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWd0U2VPN1ZhVnovNjBybVdOME1vb3dQM1VVdkVTcFNUUXVyU3ppZDhEa2MwQlFwem1VN0h4Q3RGWnZzWktRYTA5N3pMYkpQcmtUaUM0QjZManh3cmdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2OTc3CWZpbGU6T2xpc2VfMC4xLjNfYW1kNjQuQXBwSW1hZ2UKVE0yV1RpRmtzeS9PVkZ0bGVtQjU1OXRZeStFOXlVelVWcXB4YktyUjBXRkQ3UDBDWWIzeENTb2k3TTFHalJFUjBSQm1VMWljNTFXcU1sRjdyTDVNQUE9PQo=",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_0.1.3_amd64.AppImage"
     },
     "linux-x86_64-deb": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW51cHVnU3E5aE5hYTYvdUIrYVA3UHMreDdiU2NnaENINHRRS2FlK1d5Ty9aeWFiOGVvdUZIZnFDbmN2ZGdNSFhKNlp5b04wOTlJTzBLTDdhekEzcHc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE1MDYyCWZpbGU6T2xpc2VfMC4xLjJfYW1kNjQuZGViCnJ4N0JOdTVXUkhtTnFXUmJxU3ByYUNBQVdFY0hyWXk4cW1zV0d2ZW5KdzA4Q3c2Z1FWRHhLVWpXZzYvbUZwaTh6NnRBL2lZQzErWFVWcVJnczh1a0FRPT0K",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_0.1.2_amd64.deb"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWtZQUp0Tk5nSXVuayszS25kVkc0bFVBNlhLZGFCVVBSQnA3ZHJpSTVxbjNmQ3NDNGw3L095MEZ2a3BNUlYwdmlsejZoTEYvcWJBd3Q1M1ZxOUI4VFFNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2OTc3CWZpbGU6T2xpc2VfMC4xLjNfYW1kNjQuZGViCmVoK1FldWZzY2NsdE8wbCszbnNlREM2TUFYUmI5eUp3dW1SOGQvT2ZpTGFkQWVQUGxVUTdUQmxzVEZPQVM5dDhpa3p5MXR6K3NsWmx3OWtvYW9qM0RBPT0K",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_0.1.3_amd64.deb"
     },
     "linux-x86_64-rpm": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWw1U0FYRUdpcXgwSzI1YWNhMmsyb3dDSmhIcjNleEM0aG9NdlVOY2dwdmlENWFKa2x5TkRzNE1PNVI0ODVIai96VHpubmlDSFZvSGNWYmJRL1FOMlE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE1MDYyCWZpbGU6T2xpc2UtMC4xLjItMS54ODZfNjQucnBtClVuRHFFUjZuZW5oZVFBL04zM3JxbUI2bGp3NEFjSXVNZTRWcXc3bXlWQWVHN3lLOEp6bWF4RFFYb1hEbmhNVjZ1VHRLY1VDbk84RVhCS3ZhTGhzZURBPT0K",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise-0.1.2-1.x86_64.rpm"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW9NT0FoQnBYYWthMGZDK1RoTHdCRFZqQmo4ZTViRjdlVHAvU2RIelE4VjdWV05UUmpqdkhmd01aYTZ2TzJqNFFpam1tdzczaXA1K1pEMFNJS1lDOWdrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI2OTc3CWZpbGU6T2xpc2UtMC4xLjMtMS54ODZfNjQucnBtCktjRE44RDd1U1pZVHE2eUpwdnZUZ2tDNFJrcTVQUWxVV0dpM01IV0xzZGVGMXBvRVU3TkxaVjZPd3ZtdXNCUmJjZjl1bnQwT2JwSk9idG5aTzJpQUFRPT0K",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise-0.1.3-1.x86_64.rpm"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTXBSaHZxbW5VaXhtUnJ5WWFXSWZUZ3RzRmFoMUhIMitVaTdUU3VKb21YZzZUMHkrUncwU0VuekhwVk5yNUt6OEFMZjl3VkRnNVlhUUVuamVaYWZTUndVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE1MTAxCWZpbGU6T2xpc2VfMC4xLjJfeDY0X2VuLVVTLm1zaQpISkN5V29aMGxab1hLKzNwdlc5QnNuMk5OMEdwd3A0d2ZDbjJTdUc5NjVRNmdTVHFJeElZUTdoQnhVUU1rL1p5MXNwcnlBVzdyUHNIcnkwRmZuZ2dDZz09Cg==",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_0.1.2_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW1yZzlvWXkwanVndEduckd3bllXMkgySW8rbEk3NklscHc2RVdQUWhxWG5CVDVtRkYwSHBtN1Z2ZkQwenFFWU10anB3aWJEQ3p5bCtiRGxGTFVkUlFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI3MDg1CWZpbGU6T2xpc2VfMC4xLjNfeDY0X2VuLVVTLm1zaQp1aTRJTDRUWWFvSDg5ZTl2bEZBWVIwb2k0cG9VNCt5TjNwZXVjVER2cmhGMGY0UG4vR3NvMUVjRFVLeCtPaXFoa3pwZk9JWHB6M05za1cydmJXMEZDdz09Cg==",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_0.1.3_x64_en-US.msi"
     },
     "windows-x86_64-msi": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTXBSaHZxbW5VaXhtUnJ5WWFXSWZUZ3RzRmFoMUhIMitVaTdUU3VKb21YZzZUMHkrUncwU0VuekhwVk5yNUt6OEFMZjl3VkRnNVlhUUVuamVaYWZTUndVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE1MTAxCWZpbGU6T2xpc2VfMC4xLjJfeDY0X2VuLVVTLm1zaQpISkN5V29aMGxab1hLKzNwdlc5QnNuMk5OMEdwd3A0d2ZDbjJTdUc5NjVRNmdTVHFJeElZUTdoQnhVUU1rL1p5MXNwcnlBVzdyUHNIcnkwRmZuZ2dDZz09Cg==",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_0.1.2_x64_en-US.msi"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTW1yZzlvWXkwanVndEduckd3bllXMkgySW8rbEk3NklscHc2RVdQUWhxWG5CVDVtRkYwSHBtN1Z2ZkQwenFFWU10anB3aWJEQ3p5bCtiRGxGTFVkUlFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI3MDg1CWZpbGU6T2xpc2VfMC4xLjNfeDY0X2VuLVVTLm1zaQp1aTRJTDRUWWFvSDg5ZTl2bEZBWVIwb2k0cG9VNCt5TjNwZXVjVER2cmhGMGY0UG4vR3NvMUVjRFVLeCtPaXFoa3pwZk9JWHB6M05za1cydmJXMEZDdz09Cg==",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_0.1.3_x64_en-US.msi"
     },
     "windows-x86_64-nsis": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWlFT3BhRzFGWjd6KytmV1NhcjNVRlJoMTg5MVpBZzlOcm9BeWNCVGg3WVE2aEwyZ012ckthMkRsYkdhUG02cXY3MEVDbnBnd29yQjNlTWFlS3ZOWEF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzE1MTAxCWZpbGU6T2xpc2VfMC4xLjJfeDY0LXNldHVwLmV4ZQpSaVlTVzhJYjNKN3lpOWZYZjF3WXRkWjU4MkVNM28xWElxSzZwbUlyZXdrREFiNDRweGFCMlNtdFBCeHBtMzQyWDlaTHRmOFdrY1c1ZVFMSW9jOWpCUT09Cg==",
-      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.2/Olise_0.1.2_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUWElaelBNd2pFTWtucThValoxQjJ2Ym0wRmNkdUl4YVVLbzFWWUd2UFdRampEVTREM2U4RmVOMFhJZ1BKUXFDcFhNK3hkcVZlZ0ZPVnRKN3JGTlVPWWpZdFplWnJJNFFZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyMzI3MDg1CWZpbGU6T2xpc2VfMC4xLjNfeDY0LXNldHVwLmV4ZQpsc0taaERFWjYyQjNyZGtTTlliWG5qdE03RGV5aHFuVzUvUHVmN3VjR29WM013UGluVjVPcldBc2RMSlI4S0xjT3Qwc3ZoVGs1UENzVGkvOTQ5ZmlBQT09Cg==",
+      "url": "https://github.com/tanner-sys/olise-staging/releases/download/desktop-v0.1.3/Olise_0.1.3_x64-setup.exe"
     }
   }
 }
