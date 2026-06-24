@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowUp, MessageSquare, Plus } from 'lucide-react'
+import { AlertCircle, ArrowDown, ArrowUp, MessageSquare, Plus } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
@@ -43,10 +43,31 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
   const [streaming, setStreaming] = useState(false)
   const [loading, setLoading] = useState(true)
   const [threadError, setThreadError] = useState<ThreadError | null>(null)
+  const [awayFromBottom, setAwayFromBottom] = useState(false)
   const initialSent = useRef(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const messagesRef = useRef<HTMLDivElement>(null)
+  const composerRef = useRef<HTMLTextAreaElement>(null)
+  const stickToBottomRef = useRef(true)
 
-  const scrollToBottom = useCallback(() => {
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    if (!stickToBottomRef.current) return
+    bottomRef.current?.scrollIntoView({ behavior })
+  }, [])
+
+  const handleMessagesScroll = useCallback(() => {
+    const container = messagesRef.current
+    if (!container) return
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight
+    const nearBottom = distanceFromBottom < 96
+    stickToBottomRef.current = nearBottom
+    setAwayFromBottom(!nearBottom)
+  }, [])
+
+  const jumpToBottom = useCallback(() => {
+    stickToBottomRef.current = true
+    setAwayFromBottom(false)
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [])
 
@@ -59,6 +80,8 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       if (!cancelled) {
         setMessages(rows)
         setLoading(false)
+        stickToBottomRef.current = true
+        setAwayFromBottom(false)
       }
     })()
     return () => {
@@ -125,7 +148,9 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
         created_at: new Date().toISOString(),
       }
       setMessages((prev) => [...prev, streamingAssistant])
-      scrollToBottom()
+      stickToBottomRef.current = true
+      setAwayFromBottom(false)
+      scrollToBottom('auto')
 
       const history: ChatHistoryMessage[] = historyBase
         .filter((m): m is ChatMessage & { role: 'user' | 'assistant' } =>
@@ -213,7 +238,13 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
   }, [initialMessage, loading, user, sendMessage])
 
   useEffect(() => {
-    scrollToBottom()
+    if (!loading && !streaming) {
+      composerRef.current?.focus()
+    }
+  }, [loading, sessionId, streaming])
+
+  useEffect(() => {
+    scrollToBottom('auto')
   }, [messages.length, scrollToBottom])
 
   function handleSubmit(e: React.FormEvent) {
@@ -240,7 +271,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
 
   return (
     <div className="chat-view">
-      <div className="chat-messages">
+      <div className="chat-messages" ref={messagesRef} onScroll={handleMessagesScroll}>
         {loading && <StatePanel variant="loading" title="Loading conversation…" size="compact" />}
         {!loading && visibleMessages.length === 0 && (
           <StatePanel
@@ -280,10 +311,24 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
         </div>
       )}
 
-      <form className="chat-composer-wrap" onSubmit={handleSubmit}>
+      <div className="chat-composer-area">
+        {awayFromBottom && (
+          <button
+            type="button"
+            className="chat-jump-bottom"
+            onClick={jumpToBottom}
+            aria-label="Scroll to latest messages"
+          >
+            <ArrowDown size={16} strokeWidth={2} />
+          </button>
+        )}
+
+        <form className="chat-composer-wrap" onSubmit={handleSubmit}>
         <div className="composer">
           <textarea
+            ref={composerRef}
             className="composer-input"
+            data-composer-input
             placeholder="How can I help you today?"
             rows={2}
             value={input}
@@ -308,6 +353,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
           </div>
         </div>
       </form>
+      </div>
     </div>
   )
 }

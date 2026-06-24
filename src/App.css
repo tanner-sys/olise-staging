@@ -14,8 +14,12 @@
   transition: grid-template-columns var(--duration-slow) var(--ease-default);
 }
 
-.app--sidebar-open .app-shell {
+.app--sidebar-pinned .app-shell {
   grid-template-columns: calc(var(--sidebar-width) + var(--sidebar-gutter)) minmax(0, 1fr);
+}
+
+.app--sidebar-resizing .app-shell {
+  transition: none;
 }
 
 .sidebar-slot {

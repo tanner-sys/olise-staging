@@ -1,0 +1,36 @@
+@media (min-width: 768px) {
+  .sidebar-slot {
+    position: relative;
+  }
+
+  .sidebar-resize-handle {
+    position: absolute;
+    top: var(--space-4);
+    right: -5px;
+    bottom: var(--space-4);
+    width: 10px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: col-resize;
+    z-index: 2;
+  }
+
+  .sidebar-resize-handle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    transition: background var(--duration-fast);
+  }
+
+  .sidebar-resize-handle:hover::after,
+  .sidebar-resizing .sidebar-resize-handle::after {
+    background: var(--color-border-emphasis);
+  }
+}

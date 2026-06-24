@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.1.1"
+version = "0.1.2"
 description = "Olise — caregiver pediatric behavioral health"
 authors = ["T3 Labs"]
 license = ""

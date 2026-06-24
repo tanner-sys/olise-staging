@@ -12,7 +12,11 @@ import { activeChildren, displayChildName, resolveCheckInChildId, setActiveChild
 import { filterChatSessionsByScope } from '../lib/chatSessions'
 import { supabase } from '../lib/supabase'
 import type { SidebarTab } from '../types/program'
+import { useMediaQuery } from '../hooks/useMediaQuery'
+import { useSidebarWidth } from '../hooks/useSidebarWidth'
+import { SidebarResizeHandle } from '../components/SidebarResizeHandle'
 import { configureShell, getShellClassName, isMobile } from '../platform'
+import { isEditableTarget } from '../lib/keyboard'
 import { getEnrolledProgram, getEnrolledRoutine } from '../utils/enrollment'
 import { AppRoutes } from './AppRoutes'
 import { ChatProjectControl } from '../components/chat/ChatProjectControl'
@@ -20,6 +24,7 @@ import { ChatProjectLabel } from '../components/chat/ChatProjectLabel'
 import { updateSessionChildId } from '../lib/chatStorage'
 import '../App.css'
 import '../components/ShellChrome.css'
+import '../styles/desktop-polish.css'
 
 function tabFromPath(pathname: string): SidebarTab {
   if (pathname.startsWith('/programs')) return 'programs'
@@ -42,11 +47,25 @@ function chatSessionIdFromPath(pathname: string): string | null {
   return match?.[1] ?? null
 }
 
+const SIDEBAR_PINNED_KEY = 'olise-sidebar-pinned'
+
+function readSidebarPinned(): boolean {
+  if (typeof window === 'undefined') return true
+  const stored = localStorage.getItem(SIDEBAR_PINNED_KEY)
+  if (stored === 'false') return false
+  if (stored === 'true') return true
+  return window.matchMedia('(min-width: 768px)').matches
+}
+
 export default function App() {
   const navigate = useNavigate()
   const location = useLocation()
+  const isWide = useMediaQuery('(min-width: 768px)')
+  const { startResize, resizing: sidebarResizing } = useSidebarWidth(isWide)
   const { profile, children, showSetupCta, refreshProfile, user } = useAuth()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarPinned, setSidebarPinned] = useState(readSidebarPinned)
+  const [sidebarOverlayOpen, setSidebarOverlayOpen] = useState(false)
+  const [sidebarPeek, setSidebarPeek] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const [failedMessageText, setFailedMessageText] = useState<string | null>(null)
@@ -94,6 +113,27 @@ export default function App() {
     return child ? displayChildName(child) : null
   }, [chatScopeChildId, chatChildList])
 
+  const dismissSidebarPeek = useCallback(() => {
+    setSidebarPeek(false)
+  }, [])
+
+  const closeSidebarIfMobile = useCallback(() => {
+    if (!isWide) setSidebarOverlayOpen(false)
+  }, [isWide])
+
+  const handleToggleSidebar = useCallback(() => {
+    if (isWide) {
+      setSidebarPinned((pinned) => {
+        const next = !pinned
+        localStorage.setItem(SIDEBAR_PINNED_KEY, String(next))
+        return next
+      })
+      setSidebarPeek(false)
+      return
+    }
+    setSidebarOverlayOpen((open) => !open)
+  }, [isWide])
+
   useEffect(() => {
     if (!activeChatSessionId) return
     const session = chatSessions.find((s) => s.id === activeChatSessionId)
@@ -103,6 +143,38 @@ export default function App() {
   useEffect(() => {
     void configureShell()
   }, [])
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (isEditableTarget(event.target)) return
+
+      if (event.key === 'Escape') {
+        if (isWide) {
+          setSidebarPeek(false)
+        } else if (sidebarOverlayOpen) {
+          setSidebarOverlayOpen(false)
+        }
+        return
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key === 'b') {
+        event.preventDefault()
+        handleToggleSidebar()
+        return
+      }
+
+      if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        const onChat =
+          location.pathname === '/' || location.pathname.startsWith('/chat/')
+        if (!onChat) return
+        event.preventDefault()
+        document.querySelector<HTMLTextAreaElement>('[data-composer-input]')?.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleToggleSidebar, isWide, location.pathname, sidebarOverlayOpen])
 
   useEffect(() => {
     if (!isMobile()) return
@@ -146,28 +218,28 @@ export default function App() {
     (programId: string) => {
       ensureProgram(programId)
       navigate(`/programs/${programId}`)
-      setSidebarOpen(true)
+      closeSidebarIfMobile()
     },
-    [ensureProgram, navigate],
+    [ensureProgram, navigate, closeSidebarIfMobile],
   )
 
   const handleSelectRoutine = useCallback(
     (routineId: string) => {
       navigate(`/routines/${routineId}`)
-      setSidebarOpen(true)
+      closeSidebarIfMobile()
     },
-    [navigate],
+    [navigate, closeSidebarIfMobile],
   )
 
   const handleExplorePrograms = useCallback(() => {
     navigate('/programs')
-    setSidebarOpen(true)
-  }, [navigate])
+    closeSidebarIfMobile()
+  }, [navigate, closeSidebarIfMobile])
 
   const handleExploreRoutines = useCallback(() => {
     navigate('/routines')
-    setSidebarOpen(true)
-  }, [navigate])
+    closeSidebarIfMobile()
+  }, [navigate, closeSidebarIfMobile])
 
   const handleContinueProgram = useCallback(() => {
     if (!enrolledProgram) return
@@ -265,17 +337,17 @@ export default function App() {
 
   const handleNewChat = useCallback(() => {
     navigate('/')
-    setSidebarOpen(false)
-  }, [navigate])
+    closeSidebarIfMobile()
+  }, [navigate, closeSidebarIfMobile])
 
   const handleSelectChat = useCallback(
     (sessionId: string) => {
       const session = chatSessions.find((s) => s.id === sessionId)
       if (session) setChatScopeChildId(session.child_id)
       navigate(`/chat/${sessionId}`)
-      setSidebarOpen(false)
+      closeSidebarIfMobile()
     },
-    [chatSessions, navigate],
+    [chatSessions, navigate, closeSidebarIfMobile],
   )
 
   const handleAssignSessionChild = useCallback(
@@ -294,8 +366,8 @@ export default function App() {
 
   const handleOpenSettings = useCallback(() => {
     navigate('/settings')
-    setSidebarOpen(false)
-  }, [navigate])
+    closeSidebarIfMobile()
+  }, [navigate, closeSidebarIfMobile])
 
   const handleRemoveSessionChild = useCallback(async () => {
     if (!activeChatSessionId) return
@@ -308,13 +380,56 @@ export default function App() {
     }
   }, [activeChatSessionId, refreshChatSessions])
 
+  const sidebarProps = {
+    activeTab,
+    onTabChange: handleTabChange,
+    programs,
+    programsLoading,
+    programsError,
+    onRefreshPrograms: refreshPrograms,
+    activeProgramId,
+    programProgress,
+    onSelectProgram: handleSelectProgram,
+    routines,
+    routinesLoading,
+    routinesError,
+    onRefreshRoutines: refreshRoutines,
+    activeRoutineId,
+    routineDueToday,
+    onSelectRoutine: handleSelectRoutine,
+    chatSessions: scopedChatSessions,
+    activeChatSessionId,
+    chatChildren: namedChatChildren,
+    chatScopeChildId,
+    showChatChildProjects,
+    onSelectChatChild: handleSelectChatChild,
+    onNewChat: handleNewChat,
+    onSelectChat: handleSelectChat,
+    onOpenSettings: handleOpenSettings,
+    onClose: closeSidebarIfMobile,
+  }
+
+  const appClassName = [
+    'app',
+    getShellClassName(),
+    isWide
+      ? sidebarPinned
+        ? 'app--sidebar-pinned'
+        : ''
+      : sidebarOverlayOpen
+        ? 'app--sidebar-open'
+        : '',
+    isWide && sidebarPeek ? 'app--sidebar-peek' : '',
+    sidebarResizing ? 'app--sidebar-resizing' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <div
-      className={`app ${getShellClassName()} ${sidebarOpen ? 'app--sidebar-open' : ''}`}
-    >
+    <div className={appClassName}>
       <ShellChrome
-        sidebarOpen={sidebarOpen}
-        onToggleSidebar={() => setSidebarOpen((open) => !open)}
+        sidebarOpen={isWide ? sidebarPinned : sidebarOverlayOpen}
+        onToggleSidebar={handleToggleSidebar}
         centerContent={
           isChatActive && namedChatChildren.length > 0 ? (
             <ChatProjectControl
@@ -331,39 +446,44 @@ export default function App() {
       />
 
       <div className="app-shell">
-        <div className="sidebar-slot">
-          <Sidebar
-            open={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
-            programs={programs}
-            programsLoading={programsLoading}
-            programsError={programsError}
-            onRefreshPrograms={refreshPrograms}
-            activeProgramId={activeProgramId}
-            programProgress={programProgress}
-            onSelectProgram={handleSelectProgram}
-            routines={routines}
-            routinesLoading={routinesLoading}
-            routinesError={routinesError}
-            onRefreshRoutines={refreshRoutines}
-            activeRoutineId={activeRoutineId}
-            routineDueToday={routineDueToday}
-            onSelectRoutine={handleSelectRoutine}
-            chatSessions={scopedChatSessions}
-            activeChatSessionId={activeChatSessionId}
-            chatChildren={namedChatChildren}
-            chatScopeChildId={chatScopeChildId}
-            showChatChildProjects={showChatChildProjects}
-            onSelectChatChild={handleSelectChatChild}
-            onNewChat={handleNewChat}
-            onSelectChat={handleSelectChat}
-            onOpenSettings={handleOpenSettings}
+        {isWide && !sidebarPinned && sidebarPeek && (
+          <button
+            type="button"
+            className="sidebar-peek-backdrop"
+            aria-label="Close sidebar"
+            onClick={dismissSidebarPeek}
           />
+        )}
+
+        {isWide && !sidebarPinned && (
+          <div
+            className={`sidebar-flyout ${sidebarPeek ? 'sidebar-flyout--open' : ''}`}
+            onMouseEnter={() => setSidebarPeek(true)}
+            onMouseLeave={() => setSidebarPeek(false)}
+          >
+            <div className="sidebar-flyout-hit" aria-hidden />
+            <Sidebar {...sidebarProps} open={sidebarPeek} variant="flyout" />
+          </div>
+        )}
+
+        <div
+          className={`sidebar-slot ${isWide && !sidebarPinned ? 'sidebar-slot--collapsed' : ''}`}
+        >
+          {(!isWide || sidebarPinned) && (
+            <Sidebar
+              {...sidebarProps}
+              open={isWide ? sidebarPinned : sidebarOverlayOpen}
+              variant={isWide ? 'docked' : 'overlay'}
+            />
+          )}
+          {isWide && sidebarPinned && (
+            <SidebarResizeHandle onResizeStart={startResize} />
+          )}
         </div>
 
-        <main className={`main ${isRunnerActive || isChatActive || isSettingsActive ? 'main--program' : ''} ${isChatActive ? 'main--chat' : ''}`}>
+        <main
+          className={`main ${isRunnerActive || isChatActive || isSettingsActive ? 'main--program' : ''} ${isChatActive ? 'main--chat' : ''} ${isSettingsActive ? 'main--settings' : ''}`}
+        >
           <AppRoutes
             displayName={profile?.display_name}
             showSetupCta={showSetupCta}

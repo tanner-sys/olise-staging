@@ -1,0 +1,171 @@
+/* Wide layout (laptop / desktop app ~1200px reference) */
+@media (min-width: 768px) {
+  .app {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .top-bar {
+    flex-shrink: 0;
+    position: relative;
+    z-index: var(--z-top-bar);
+    background: var(--color-bg-app);
+    border-bottom: 1px solid transparent;
+  }
+
+  .app-shell {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .sidebar-slot {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .sidebar-slot--collapsed {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .sidebar--docked {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .sidebar-flyout {
+    position: fixed;
+    left: 0;
+    top: var(--app-chrome-height);
+    bottom: var(--sidebar-gutter);
+    z-index: var(--z-sidebar);
+    display: flex;
+    align-items: stretch;
+    pointer-events: none;
+  }
+
+  .sidebar-flyout-hit {
+    width: 14px;
+    flex-shrink: 0;
+    pointer-events: auto;
+  }
+
+  .sidebar-flyout .sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+    opacity: 0;
+    transform: translateX(-12px);
+    pointer-events: none;
+    transition:
+      opacity var(--duration-normal) var(--ease-default),
+      transform var(--duration-slow) var(--ease-default);
+  }
+
+  .sidebar-flyout--open {
+    pointer-events: auto;
+  }
+
+  .sidebar-flyout--open .sidebar {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .sidebar-peek-backdrop {
+    position: fixed;
+    top: var(--app-chrome-height);
+    right: 0;
+    bottom: var(--sidebar-gutter);
+    left: 0;
+    z-index: calc(var(--z-sidebar) - 1);
+    border: none;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.04);
+    cursor: default;
+  }
+
+  .main--chat,
+  .main--program,
+  .main--settings {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: var(--space-8);
+  }
+
+  .chat-messages {
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+  }
+
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+  }
+
+  .settings-page {
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-12) var(--space-16);
+    overflow-y: auto;
+    min-height: 0;
+    flex: 1;
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --content-max-runner: 760px;
+    --content-gutter: 24px;
+  }
+
+  .main--chat .chat-view {
+    max-width: 760px;
+  }
+
+  .chat-thread-error {
+    max-width: 760px;
+  }
+}
+
+.platform-desktop {
+  --sidebar-gutter: 12px;
+  --app-chrome-height: 52px;
+}
+
+.platform-desktop .top-bar {
+  padding-bottom: var(--space-3);
+}
+
+.platform-desktop .main:not(.main--chat):not(.main--program):not(.main--settings) {
+  padding-top: var(--space-10);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.platform-desktop .composer-input:focus {
+  outline: none;
+}
+
+.platform-desktop .composer:focus-within {
+  border-color: var(--color-border-emphasis);
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(0, 0, 0, 0.04);
+}

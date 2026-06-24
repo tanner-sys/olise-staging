@@ -1,5 +1,5 @@
 import { ArrowUp, LayoutGrid, Mic, Plus, Repeat, Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { childChatScopeLabel } from '../lib/children'
 import type { ChatSession } from '../hooks/useChatSessions'
 import type { EnrolledItem } from '../utils/enrollment'
@@ -117,6 +117,13 @@ export function ChatHome({
 }: ChatHomeProps) {
   const greetingName = displayName ? firstName(displayName) : 'there'
   const [input, setInput] = useState('')
+  const composerRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (!sending) {
+      composerRef.current?.focus()
+    }
+  }, [sending, chatScopeChildId])
 
   const inChildProject = Boolean(chatScopeChildId)
 
@@ -177,7 +184,9 @@ export function ChatHome({
 
         <form className="composer" onSubmit={handleSubmit}>
           <textarea
+            ref={composerRef}
             className="composer-input"
+            data-composer-input
             placeholder={
               inChildProject && scopeChildName
                 ? `How can I help with ${scopeChildName}?`

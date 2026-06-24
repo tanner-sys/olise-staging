@@ -50,6 +50,7 @@ const routineStatusLabels = {
 
 type SidebarProps = {
   open: boolean
+  variant?: 'overlay' | 'docked' | 'flyout'
   onClose: () => void
   activeTab: SidebarTab
   onTabChange: (tab: SidebarTab) => void
@@ -80,6 +81,7 @@ type SidebarProps = {
 
 export function Sidebar({
   open,
+  variant = 'overlay',
   onClose,
   activeTab,
   onTabChange,
@@ -152,7 +154,7 @@ export function Sidebar({
 
   return (
     <>
-      {open && (
+      {variant === 'overlay' && open && (
         <button
           type="button"
           className="sidebar-backdrop"
@@ -160,7 +162,10 @@ export function Sidebar({
           onClick={onClose}
         />
       )}
-      <aside className={`sidebar ${open ? 'sidebar--open' : ''}`} aria-hidden={!open}>
+      <aside
+        className={`sidebar sidebar--${variant} ${open ? 'sidebar--open' : ''}`}
+        aria-hidden={!open}
+      >
         <div className="sidebar-tabs" role="tablist" aria-label="Sidebar sections">
           {tabs.map(({ id, label, icon: Icon }) => {
             const isActive = activeTab === id

@@ -1,4 +1,5 @@
 import { useDesktopUpdate } from '../../hooks/useDesktopUpdate'
+import { useEscapeKey } from '../../hooks/useEscapeKey'
 import './DesktopUpdateModal.css'
 
 type DesktopUpdateModalProps = {
@@ -8,10 +9,12 @@ type DesktopUpdateModalProps = {
 
 export function DesktopUpdateModal({ open, onClose }: DesktopUpdateModalProps) {
   const { updateInfo, status, progress, error, install } = useDesktopUpdate()
+  const isDownloading = status === 'downloading'
+
+  useEscapeKey(onClose, open && Boolean(updateInfo) && !isDownloading)
 
   if (!open || !updateInfo) return null
 
-  const isDownloading = status === 'downloading'
   const percent =
     progress?.total && progress.total > 0
       ? Math.min(100, Math.round((progress.downloaded / progress.total) * 100))

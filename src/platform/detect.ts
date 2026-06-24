@@ -36,6 +36,10 @@ export function isMobile(): boolean {
   return platform === 'ios' || platform === 'android'
 }
 
+export function isDesktop(): boolean {
+  return getPlatform() === 'desktop'
+}
+
 export function showDecorativeChrome(): boolean {
   return getPlatform() === 'web'
 }

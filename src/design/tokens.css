@@ -80,8 +80,9 @@
   --space-18: 36px;
 
   /* Layout */
-  --sidebar-width: 248px;
+  --sidebar-width: 260px;
   --sidebar-gutter: 10px;
+  --app-chrome-height: 48px;
   --content-max: 720px;
   --content-max-runner: 680px;
   --content-gutter: 20px;

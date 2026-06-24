@@ -39,6 +39,11 @@
     opacity: 1;
     pointer-events: auto;
   }
+
+  .sidebar--docked,
+  .sidebar--flyout {
+    border-radius: var(--radius-3xl);
+  }
 }
 
 @media (max-width: 767px) {
