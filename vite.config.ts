@@ -51,9 +51,9 @@ export default defineConfig({
   },
   envPrefix: ['VITE_', 'TAURI_'],
   build: {
-    target: process.env.TAURI_ENV_PLATFORM
-      ? ['es2021', 'chrome100', 'safari13']
-      : undefined,
+    // Tauri sets TAURI_ENV_PLATFORM during `tauri build`; use a modern target so
+    // bundled dependencies (rolldown/esbuild) do not fail on destructuring transforms.
+    target: process.env.TAURI_ENV_PLATFORM ? 'esnext' : undefined,
     minify: process.env.TAURI_ENV_DEBUG ? false : 'esbuild',
     sourcemap: !!process.env.TAURI_ENV_DEBUG,
   },
