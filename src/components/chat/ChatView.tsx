@@ -133,6 +133,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       let hadError = false
       let errorMessage = ''
       let isCrisisResponse = false
+      let isBlockedResponse = false
       let doneUserMessageId = ''
       let doneAssistantMessageId = ''
 
@@ -145,10 +146,25 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
             ),
           )
           scrollToBottom()
+        } else if (event.type === 'blocked') {
+          isBlockedResponse = true
+          assistantContent = event.message
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === 'streaming'
+                ? { ...m, content: event.message, blocked: true }
+                : m,
+            ),
+          )
         } else if (event.type === 'meta' && event.crisis) {
           isCrisisResponse = true
           setMessages((prev) =>
             prev.map((m) => (m.id === 'streaming' ? { ...m, crisis: true } : m)),
+          )
+        } else if (event.type === 'meta' && event.blocked) {
+          isBlockedResponse = true
+          setMessages((prev) =>
+            prev.map((m) => (m.id === 'streaming' ? { ...m, blocked: true } : m)),
           )
         } else if (event.type === 'done') {
           doneUserMessageId = event.userMessageId
@@ -179,6 +195,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
                 id: doneAssistantMessageId,
                 content: assistantContent,
                 crisis: isCrisisResponse || m.crisis,
+                blocked: isBlockedResponse || m.blocked,
               }
             }
             return m
@@ -253,7 +270,9 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
             key={message.id}
             className={`chat-message chat-message--${message.role} ${
               message.crisis ? 'chat-message--crisis' : ''
-            } ${message.id === 'streaming' ? 'chat-message--streaming' : ''}`}
+            } ${message.blocked ? 'chat-message--blocked' : ''} ${
+              message.id === 'streaming' ? 'chat-message--streaming' : ''
+            }`}
           >
             <div className="chat-message-bubble">
               <ChatMessageBody content={message.content} role={message.role} />

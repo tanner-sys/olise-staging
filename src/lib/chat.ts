@@ -4,7 +4,17 @@ const brainUrl = import.meta.env.VITE_BRAIN_URL?.replace(/\/$/, '') ?? ''
 
 export type ChatStreamEvent =
   | { type: 'token'; text: string }
-  | { type: 'meta'; crisis?: boolean; turnId?: string; provider?: string; model?: string; replayed?: boolean }
+  | {
+      type: 'meta'
+      crisis?: boolean
+      blocked?: boolean
+      turnId?: string
+      provider?: string
+      model?: string
+      replayed?: boolean
+      code?: string
+    }
+  | { type: 'blocked'; code: string; message: string }
   | {
       type: 'done'
       userMessageId: string
@@ -92,10 +102,18 @@ export async function streamChatMessage(
           onEvent({
             type: 'meta',
             crisis: data.crisis === true,
+            blocked: data.blocked === true,
             turnId: typeof data.turnId === 'string' ? data.turnId : undefined,
             provider: typeof data.provider === 'string' ? data.provider : undefined,
             model: typeof data.model === 'string' ? data.model : undefined,
             replayed: data.replayed === true,
+            code: typeof data.code === 'string' ? data.code : undefined,
+          })
+        } else if (eventType === 'blocked') {
+          onEvent({
+            type: 'blocked',
+            code: String(data.code ?? 'policy_violation'),
+            message: String(data.message ?? ''),
           })
         } else if (eventType === 'done') {
           onEvent({

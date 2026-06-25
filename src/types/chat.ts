@@ -4,4 +4,5 @@ export type ChatMessage = {
   content: string
   created_at: string
   crisis?: boolean
+  blocked?: boolean
 }

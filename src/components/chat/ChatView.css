@@ -154,6 +154,11 @@
   border-color: rgba(37, 99, 235, 0.2);
 }
 
+.chat-message--blocked .chat-message-bubble {
+  background: #f8fafc;
+  border-color: rgba(100, 116, 139, 0.35);
+}
+
 .chat-message--error .chat-message-bubble {
   background: #fef2f2;
   border-color: rgba(220, 38, 38, 0.25);
