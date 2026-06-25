@@ -2,6 +2,12 @@ import { formatChatError } from './formatChatError'
 
 const brainUrl = import.meta.env.VITE_BRAIN_URL?.replace(/\/$/, '') ?? ''
 
+export type CrisisResource = {
+  label: string
+  detail: string
+  href: string
+}
+
 export type ChatStreamEvent =
   | { type: 'token'; text: string }
   | {
@@ -13,6 +19,12 @@ export type ChatStreamEvent =
       model?: string
       replayed?: boolean
       code?: string
+    }
+  | {
+      type: 'crisis'
+      crisisEventId: string
+      category: string
+      resources: CrisisResource[]
     }
   | { type: 'blocked'; code: string; message: string }
   | { type: 'replace'; content: string; reason: string }
@@ -109,6 +121,15 @@ export async function streamChatMessage(
             model: typeof data.model === 'string' ? data.model : undefined,
             replayed: data.replayed === true,
             code: typeof data.code === 'string' ? data.code : undefined,
+          })
+        } else if (eventType === 'crisis') {
+          onEvent({
+            type: 'crisis',
+            crisisEventId: String(data.crisisEventId ?? ''),
+            category: String(data.category ?? 'crisis_self_harm'),
+            resources: Array.isArray(data.resources)
+              ? (data.resources as CrisisResource[])
+              : [],
           })
         } else if (eventType === 'blocked') {
           onEvent({

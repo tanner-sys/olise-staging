@@ -4,11 +4,19 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { getAccessToken } from '../../lib/accessToken'
 import { streamChatMessage } from '../../lib/chat'
+import {
+  acknowledgeCrisis,
+  CRISIS_RESOURCES,
+  loadUnacknowledgedCrisis,
+  type ActiveCrisis,
+} from '../../lib/crisisStorage'
 import { loadSessionMessages } from '../../lib/chatStorage'
 import type { ChatMessage } from '../../types/chat'
 import { StatePanel } from '../state/StatePanel'
 import { ChatMessageBody } from './ChatMessageBody'
+import { CrisisCard } from './CrisisCard'
 import './ChatView.css'
+import './CrisisCard.css'
 
 type ChatViewProps = {
   sessionId: string
@@ -39,6 +47,8 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
   const [loading, setLoading] = useState(true)
   const [threadError, setThreadError] = useState<ThreadError | null>(null)
   const [awayFromBottom, setAwayFromBottom] = useState(false)
+  const [activeCrisis, setActiveCrisis] = useState<ActiveCrisis | null>(null)
+  const [acknowledgingCrisis, setAcknowledgingCrisis] = useState(false)
   const initialSent = useRef(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const messagesRef = useRef<HTMLDivElement>(null)
@@ -72,8 +82,10 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       setLoading(true)
       setThreadError(null)
       const rows = await loadSessionMessages(sessionId)
+      const pendingCrisis = await loadUnacknowledgedCrisis(sessionId)
       if (!cancelled) {
         setMessages(rows)
+        setActiveCrisis(pendingCrisis)
         setLoading(false)
         stickToBottomRef.current = true
         setAwayFromBottom(false)
@@ -87,7 +99,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
   const sendMessage = useCallback(
     async (text: string, options?: SendOptions) => {
       const trimmed = text.trim()
-      if (!trimmed || streaming || !user) return
+      if (!trimmed || streaming || !user || activeCrisis) return
 
       setThreadError(null)
 
@@ -146,6 +158,13 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
             ),
           )
           scrollToBottom()
+        } else if (event.type === 'crisis') {
+          isCrisisResponse = true
+          setActiveCrisis({
+            crisisEventId: event.crisisEventId || null,
+            category: event.category,
+            resources: event.resources.length > 0 ? event.resources : CRISIS_RESOURCES,
+          })
         } else if (event.type === 'replace') {
           assistantContent = event.content
           setMessages((prev) =>
@@ -224,8 +243,26 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       navigate(`/chat/${sessionId}`, { replace: true, state: {} })
       scrollToBottom()
     },
-    [user, streaming, scrollToBottom, navigate, sessionId, onSessionActivity],
+    [user, streaming, scrollToBottom, navigate, sessionId, onSessionActivity, activeCrisis],
   )
+
+  async function handleAcknowledgeCrisis() {
+    if (!activeCrisis || acknowledgingCrisis) return
+
+    setAcknowledgingCrisis(true)
+    try {
+      if (activeCrisis.crisisEventId && user) {
+        await acknowledgeCrisis(activeCrisis.crisisEventId, user.id)
+      }
+      setActiveCrisis(null)
+      const rows = await loadSessionMessages(sessionId)
+      setMessages(rows)
+    } finally {
+      setAcknowledgingCrisis(false)
+    }
+  }
+
+  const composerLocked = Boolean(activeCrisis)
 
   useEffect(() => {
     if (initialMessage && !initialSent.current && !loading && user) {
@@ -235,10 +272,10 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
   }, [initialMessage, loading, user, sendMessage])
 
   useEffect(() => {
-    if (!loading && !streaming) {
+    if (!loading && !streaming && !composerLocked) {
       composerRef.current?.focus()
     }
-  }, [loading, sessionId, streaming])
+  }, [loading, sessionId, streaming, composerLocked])
 
   useEffect(() => {
     scrollToBottom('auto')
@@ -268,6 +305,15 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
 
   return (
     <div className="chat-view">
+      {activeCrisis && (
+        <CrisisCard
+          category={activeCrisis.category}
+          resources={activeCrisis.resources}
+          onAcknowledge={() => void handleAcknowledgeCrisis()}
+          acknowledging={acknowledgingCrisis}
+        />
+      )}
+
       <div className="chat-messages" ref={messagesRef} onScroll={handleMessagesScroll}>
         {loading && <StatePanel variant="loading" title="Loading conversation…" size="compact" />}
         {!loading && visibleMessages.length === 0 && (
@@ -310,7 +356,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
         </div>
       )}
 
-      <div className="chat-composer-area">
+      <div className={`chat-composer-area ${composerLocked ? 'chat-composer--locked' : ''}`}>
         {awayFromBottom && (
           <button
             type="button"
@@ -333,7 +379,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={streaming || loading}
+            disabled={streaming || loading || composerLocked}
           />
           <div className="composer-toolbar">
             <button type="button" className="icon-btn toolbar-btn" aria-label="Add attachment" disabled>
@@ -344,13 +390,17 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
                 type="submit"
                 className="chat-send-btn"
                 aria-label="Send message"
-                disabled={streaming || loading || !input.trim()}
+                disabled={streaming || loading || composerLocked || !input.trim()}
               >
                 <ArrowUp size={14} strokeWidth={2} />
               </button>
             </div>
           </div>
         </div>
+        <p className="chat-crisis-footer">
+          In a crisis, call or text <a href="tel:988">988</a> or text HOME to 741741. For emergencies,
+          call 911.
+        </p>
       </form>
       </div>
     </div>
