@@ -18,34 +18,6 @@ export async function loadSessionMessages(sessionId: string): Promise<ChatMessag
 
   return (data ?? []) as ChatMessage[]
 }
-
-export async function saveMessage(params: {
-  sessionId: string
-  caregiverId: string
-  role: 'user' | 'assistant'
-  content: string
-}): Promise<string | null> {
-  if (!supabase) return null
-
-  const { data, error } = await supabase
-    .from('messages')
-    .insert({
-      session_id: params.sessionId,
-      caregiver_id: params.caregiverId,
-      role: params.role,
-      content: params.content,
-    })
-    .select('id')
-    .single()
-
-  if (error) {
-    console.error('Failed to save message', error)
-    return null
-  }
-
-  return data.id as string
-}
-
 export async function touchSession(sessionId: string, title?: string): Promise<void> {
   if (!supabase) return
 

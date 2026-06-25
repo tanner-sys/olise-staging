@@ -63,6 +63,8 @@ When a new version is published, desktop users see an **Update** button in the s
 
 ## Architecture
 
+- **[System & model architecture](docs/ARCHITECTURE.md)** — product thesis, brain pipeline, RAG/safety design
+- **[Execution roadmap](docs/ROADMAP.md)** — Phase 2 sequence, milestones, beta gate (Linear: T3V-164)
 - **Design tokens** — `src/design/tokens.css` (colors, spacing, typography, safe areas)
 - **Platform layer** — `src/platform/` (detect, storage, shell chrome, haptics)
 - **Storage** — async API backed by `localStorage` (web), Capacitor Preferences (mobile), Tauri Store (desktop)

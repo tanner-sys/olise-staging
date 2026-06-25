@@ -3,13 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { getAccessToken } from '../../lib/accessToken'
-import { streamChatMessage, type ChatHistoryMessage } from '../../lib/chat'
-import {
-  loadSessionMessages,
-  saveMessage,
-  titleFromFirstMessage,
-  touchSession,
-} from '../../lib/chatStorage'
+import { streamChatMessage } from '../../lib/chat'
+import { loadSessionMessages } from '../../lib/chatStorage'
 import type { ChatMessage } from '../../types/chat'
 import { StatePanel } from '../state/StatePanel'
 import { ChatMessageBody } from './ChatMessageBody'
@@ -23,13 +18,13 @@ type ChatViewProps = {
 type ThreadError = {
   message: string
   retryText: string
-  skipUserPersist: boolean
-  userMessageId?: string
+  clientMessageId: string
+  skipUserMessage?: boolean
 }
 
 type SendOptions = {
-  skipUserPersist?: boolean
-  userMessageId?: string
+  clientMessageId?: string
+  skipUserMessage?: boolean
 }
 
 export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
@@ -101,8 +96,8 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
         setThreadError({
           message: 'Your session expired. Please sign out and sign in again, then retry.',
           retryText: trimmed,
-          skipUserPersist: Boolean(options?.skipUserPersist),
-          userMessageId: options?.userMessageId,
+          clientMessageId: options?.clientMessageId ?? crypto.randomUUID(),
+          skipUserMessage: options?.skipUserMessage,
         })
         return
       }
@@ -110,35 +105,17 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       setInput('')
       setStreaming(true)
 
-      const skipUserPersist = Boolean(options?.skipUserPersist)
-      let userMessageId = options?.userMessageId
-      let historyBase = messages
+      const clientMessageId = options?.clientMessageId ?? crypto.randomUUID()
+      const skipUserMessage = Boolean(options?.skipUserMessage)
 
-      if (!skipUserPersist) {
-        const isFirstMessage = messages.filter((m) => m.role === 'user').length === 0
-
-        userMessageId = await saveMessage({
-          sessionId,
-          caregiverId: user.id,
-          role: 'user',
-          content: trimmed,
-        }) ?? undefined
-
+      if (!skipUserMessage) {
         const optimisticUser: ChatMessage = {
-          id: userMessageId ?? `user-${Date.now()}`,
+          id: `pending-${clientMessageId}`,
           role: 'user',
           content: trimmed,
           created_at: new Date().toISOString(),
         }
-        historyBase = [...messages, optimisticUser]
         setMessages((prev) => [...prev, optimisticUser])
-
-        if (isFirstMessage) {
-          await touchSession(sessionId, titleFromFirstMessage(trimmed))
-          onSessionActivity?.()
-        } else {
-          await touchSession(sessionId)
-        }
       }
 
       const streamingAssistant: ChatMessage = {
@@ -152,72 +129,61 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       setAwayFromBottom(false)
       scrollToBottom('auto')
 
-      const history: ChatHistoryMessage[] = historyBase
-        .filter((m): m is ChatMessage & { role: 'user' | 'assistant' } =>
-          m.role === 'user' || m.role === 'assistant',
-        )
-        .map((m) => ({ role: m.role, content: m.content }))
-
       let assistantContent = ''
       let hadError = false
       let errorMessage = ''
       let isCrisisResponse = false
+      let doneUserMessageId = ''
+      let doneAssistantMessageId = ''
 
-      await streamChatMessage(
-        trimmed,
-        history,
-        accessToken,
-        sessionId,
-        userMessageId,
-        (event) => {
-          if (event.type === 'token') {
-            assistantContent += event.text
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === 'streaming' ? { ...m, content: m.content + event.text } : m,
-              ),
-            )
-            scrollToBottom()
-          } else if (event.type === 'meta' && event.crisis) {
-            isCrisisResponse = true
-            setMessages((prev) =>
-              prev.map((m) => (m.id === 'streaming' ? { ...m, crisis: true } : m)),
-            )
-          } else if (event.type === 'error') {
-            hadError = true
-            errorMessage = event.message
-            setMessages((prev) => prev.filter((m) => m.id !== 'streaming'))
-          }
-        },
-      )
+      await streamChatMessage(trimmed, accessToken, sessionId, clientMessageId, (event) => {
+        if (event.type === 'token') {
+          assistantContent += event.text
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === 'streaming' ? { ...m, content: m.content + event.text } : m,
+            ),
+          )
+          scrollToBottom()
+        } else if (event.type === 'meta' && event.crisis) {
+          isCrisisResponse = true
+          setMessages((prev) =>
+            prev.map((m) => (m.id === 'streaming' ? { ...m, crisis: true } : m)),
+          )
+        } else if (event.type === 'done') {
+          doneUserMessageId = event.userMessageId
+          doneAssistantMessageId = event.assistantMessageId
+        } else if (event.type === 'error') {
+          hadError = true
+          errorMessage = event.message
+          setMessages((prev) => prev.filter((m) => m.id !== 'streaming'))
+        }
+      })
 
       if (hadError) {
         setThreadError({
           message: errorMessage,
           retryText: trimmed,
-          skipUserPersist: true,
-          userMessageId,
+          clientMessageId,
+          skipUserMessage: true,
         })
-      } else if (assistantContent) {
-        const assistantId = await saveMessage({
-          sessionId,
-          caregiverId: user.id,
-          role: 'assistant',
-          content: assistantContent,
-        })
+      } else if (assistantContent && doneAssistantMessageId) {
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === 'streaming'
-              ? {
-                  ...m,
-                  id: assistantId ?? `assistant-${Date.now()}`,
-                  content: assistantContent,
-                  crisis: isCrisisResponse || m.crisis,
-                }
-              : m,
-          ),
+          prev.map((m) => {
+            if (m.id === `pending-${clientMessageId}` && doneUserMessageId) {
+              return { ...m, id: doneUserMessageId }
+            }
+            if (m.id === 'streaming') {
+              return {
+                ...m,
+                id: doneAssistantMessageId,
+                content: assistantContent,
+                crisis: isCrisisResponse || m.crisis,
+              }
+            }
+            return m
+          }),
         )
-        await touchSession(sessionId)
         onSessionActivity?.()
       } else {
         setMessages((prev) => prev.filter((m) => m.id !== 'streaming'))
@@ -227,7 +193,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       navigate(`/chat/${sessionId}`, { replace: true, state: {} })
       scrollToBottom()
     },
-    [user, messages, streaming, scrollToBottom, navigate, sessionId, onSessionActivity],
+    [user, streaming, scrollToBottom, navigate, sessionId, onSessionActivity],
   )
 
   useEffect(() => {
@@ -262,8 +228,8 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
   function handleRetry() {
     if (!threadError || streaming) return
     void sendMessage(threadError.retryText, {
-      skipUserPersist: threadError.skipUserPersist,
-      userMessageId: threadError.userMessageId,
+      clientMessageId: threadError.clientMessageId,
+      skipUserMessage: threadError.skipUserMessage,
     })
   }
 

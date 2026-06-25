@@ -1,0 +1,34 @@
+{
+  "epic": "T3V-164",
+  "document": "https://linear.app/t3v/document/brain-architecture-and-roadmap-6cc0f18f8665",
+  "milestones": [
+    "M1 — Foundation (server turns + telemetry)",
+    "M2 — Safety pipeline",
+    "M3 — Clinical RAG",
+    "M4 — Eval gate + beta ready"
+  ],
+  "sequence": [
+    { "id": "T3V-165", "title": "164.1 Schema", "milestone": "M1", "blockedBy": [] },
+    { "id": "T3V-166", "title": "164.2 Telemetry spine", "milestone": "M1", "blockedBy": ["T3V-165"] },
+    { "id": "T3V-167", "title": "164.3 Brain writes messages", "milestone": "M1", "blockedBy": ["T3V-165"] },
+    { "id": "T3V-168", "title": "164.4 Server history", "milestone": "M1", "blockedBy": ["T3V-167"] },
+    { "id": "T3V-169", "title": "164.5 UI chat refactor", "milestone": "M1", "blockedBy": ["T3V-167", "T3V-168"] },
+    { "id": "T3V-170", "title": "164.6 Pre-safety parallel", "milestone": "M2", "blockedBy": ["T3V-166", "T3V-167"] },
+    { "id": "T3V-171", "title": "164.7 Jailbreak blocking", "milestone": "M2", "blockedBy": ["T3V-170"] },
+    { "id": "T3V-172", "title": "164.8 Post-safety", "milestone": "M2", "blockedBy": ["T3V-170"] },
+    { "id": "T3V-173", "title": "164.9 Crisis UX", "milestone": "M2", "blockedBy": ["T3V-170"] },
+    { "id": "T3V-174", "title": "164.10 Ingest CLI", "milestone": "M3", "blockedBy": ["T3V-169"] },
+    { "id": "T3V-175", "title": "164.11 sync-program", "milestone": "M3", "blockedBy": ["T3V-174"] },
+    { "id": "T3V-180", "title": "164.12 RAG retrieval", "milestone": "M3", "blockedBy": ["T3V-168", "T3V-175"] },
+    { "id": "T3V-176", "title": "164.13 Citations", "milestone": "M3", "blockedBy": ["T3V-180", "T3V-169"] },
+    { "id": "T3V-177", "title": "164.14 Eval harness", "milestone": "M4", "blockedBy": ["T3V-166"] },
+    { "id": "T3V-178", "title": "164.15 Eval CI gate", "milestone": "M4", "blockedBy": ["T3V-177", "T3V-172", "T3V-180"] },
+    { "id": "T3V-179", "title": "164.16 Beta checklist", "milestone": "M4", "blockedBy": ["T3V-178"] },
+    { "id": "T3V-112", "title": "Azure OpenAI fallback keys", "milestone": "M4", "blockedBy": [] }
+  ],
+  "superseded": {
+    "T3V-114": "T3V-166",
+    "T3V-134": "T3V-177",
+    "T3V-131": "T3V-174,T3V-175,T3V-180,T3V-176"
+  }
+}

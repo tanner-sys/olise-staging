@@ -2,15 +2,15 @@ import { formatChatError } from './formatChatError'
 
 const brainUrl = import.meta.env.VITE_BRAIN_URL?.replace(/\/$/, '') ?? ''
 
-export type ChatHistoryMessage = {
-  role: 'user' | 'assistant'
-  content: string
-}
-
 export type ChatStreamEvent =
   | { type: 'token'; text: string }
-  | { type: 'meta'; crisis: boolean }
-  | { type: 'done' }
+  | { type: 'meta'; crisis?: boolean; turnId?: string; provider?: string; model?: string; replayed?: boolean }
+  | {
+      type: 'done'
+      userMessageId: string
+      assistantMessageId: string
+      replayed?: boolean
+    }
   | { type: 'error'; message: string }
 
 export function isChatConfigured(): boolean {
@@ -19,10 +19,9 @@ export function isChatConfigured(): boolean {
 
 export async function streamChatMessage(
   content: string,
-  history: ChatHistoryMessage[],
   accessToken: string,
   sessionId: string,
-  messageId: string | undefined,
+  clientMessageId: string,
   onEvent: (event: ChatStreamEvent) => void,
 ): Promise<void> {
   if (!brainUrl) {
@@ -38,7 +37,7 @@ export async function streamChatMessage(
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ content, history, sessionId, messageId }),
+      body: JSON.stringify({ content, sessionId, clientMessageId }),
     })
   } catch {
     onEvent({
@@ -89,10 +88,22 @@ export async function streamChatMessage(
         const data = JSON.parse(dataLine) as Record<string, unknown>
         if (eventType === 'token' && typeof data.text === 'string') {
           onEvent({ type: 'token', text: data.text })
-        } else if (eventType === 'meta' && data.crisis === true) {
-          onEvent({ type: 'meta', crisis: true })
+        } else if (eventType === 'meta') {
+          onEvent({
+            type: 'meta',
+            crisis: data.crisis === true,
+            turnId: typeof data.turnId === 'string' ? data.turnId : undefined,
+            provider: typeof data.provider === 'string' ? data.provider : undefined,
+            model: typeof data.model === 'string' ? data.model : undefined,
+            replayed: data.replayed === true,
+          })
         } else if (eventType === 'done') {
-          onEvent({ type: 'done' })
+          onEvent({
+            type: 'done',
+            userMessageId: String(data.userMessageId ?? ''),
+            assistantMessageId: String(data.assistantMessageId ?? ''),
+            replayed: data.replayed === true,
+          })
         } else if (eventType === 'error') {
           onEvent({
             type: 'error',
