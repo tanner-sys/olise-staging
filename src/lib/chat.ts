@@ -15,6 +15,7 @@ export type ChatStreamEvent =
       code?: string
     }
   | { type: 'blocked'; code: string; message: string }
+  | { type: 'replace'; content: string; reason: string }
   | {
       type: 'done'
       userMessageId: string
@@ -114,6 +115,12 @@ export async function streamChatMessage(
             type: 'blocked',
             code: String(data.code ?? 'policy_violation'),
             message: String(data.message ?? ''),
+          })
+        } else if (eventType === 'replace') {
+          onEvent({
+            type: 'replace',
+            content: String(data.content ?? ''),
+            reason: String(data.reason ?? 'post_safety'),
           })
         } else if (eventType === 'done') {
           onEvent({

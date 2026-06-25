@@ -146,6 +146,20 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
             ),
           )
           scrollToBottom()
+        } else if (event.type === 'replace') {
+          assistantContent = event.content
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === 'streaming'
+                ? {
+                    ...m,
+                    content: event.content,
+                    crisis: event.reason === 'crisis' ? true : m.crisis,
+                    blocked: event.reason === 'blocked' ? true : m.blocked,
+                  }
+                : m,
+            ),
+          )
         } else if (event.type === 'blocked') {
           isBlockedResponse = true
           assistantContent = event.message
