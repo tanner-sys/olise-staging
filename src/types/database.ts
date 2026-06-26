@@ -224,6 +224,34 @@ export type Database = {
         }
         Relationships: []
       }
+      crisis_events: {
+        Row: {
+          id: string
+          caregiver_id: string
+          session_id: string | null
+          message_id: string | null
+          child_id: string | null
+          category: string
+          detected_at: string
+          resolution: string | null
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
+      crisis_acknowledgments: {
+        Row: {
+          crisis_event_id: string
+          caregiver_id: string
+          acknowledged_at: string
+        }
+        Insert: {
+          crisis_event_id: string
+          caregiver_id: string
+        }
+        Update: never
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: {
