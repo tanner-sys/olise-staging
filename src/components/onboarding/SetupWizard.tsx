@@ -120,7 +120,6 @@ export function SetupWizard() {
         await ensureChildChatSession(user.id, savedChildId, childName)
       }
 
-      setChildCount((c) => c + 1)
       setDisplayName('')
       setAgeBand('6_8')
       setConditions([])

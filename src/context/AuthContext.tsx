@@ -29,7 +29,6 @@ export type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export { AuthContext }
-export type { AuthContextValue }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)

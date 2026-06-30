@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-import { fetchRoutines } from '../lib/routines'
-import type { Routine } from '../types/routine'
+import { fetchPrograms } from '../lib/programs'
+import type { Program } from '../types/program'
 
-export function useRoutines() {
-  const [routines, setRoutines] = useState<Routine[]>([])
+export function usePrograms() {
+  const [programs, setPrograms] = useState<Program[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
     setLoading(true)
     setError(null)
-    const result = await fetchRoutines()
-    setRoutines(result.data)
+    const result = await fetchPrograms()
+    setPrograms(result.data)
     setError(result.error)
     setLoading(false)
   }, [])
@@ -19,9 +19,9 @@ export function useRoutines() {
   useEffect(() => {
     let active = true
     void (async () => {
-      const result = await fetchRoutines()
+      const result = await fetchPrograms()
       if (!active) return
-      setRoutines(result.data)
+      setPrograms(result.data)
       setError(result.error)
       setLoading(false)
     })()
@@ -30,5 +30,5 @@ export function useRoutines() {
     }
   }, [])
 
-  return { routines, loading, error, refresh }
+  return { programs, loading, error, refresh }
 }
