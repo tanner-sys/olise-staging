@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, BarChart3, Check } from 'lucide-react'
 import type { CaregiverProfile, ChildProfile } from '../types/database'
 import type { CheckInEntry, Routine, RoutineSession } from '../types/routine'
@@ -141,18 +141,24 @@ export function RoutineRunner({
   const isLastQuestion = session.questionIndex === totalQuestions - 1
   const currentAnswer = question ? session.answers[question.id] : undefined
 
+  const beginCheckIn = useCallback(
+    async (childId: string) => {
+      await onSelectChild(childId)
+      setCheckInChildId(childId)
+      setViewingChildId(childId)
+      setSession({ questionIndex: 0, answers: {} })
+      setView('checkin')
+    },
+    [onSelectChild],
+  )
+
   useEffect(() => {
     if (!pendingAutoStart || childList.length !== 1) return
-    void beginCheckIn(childList[0].id).then(() => onAutoStartHandled?.())
-  }, [pendingAutoStart, childList, onAutoStartHandled])
-
-  async function beginCheckIn(childId: string) {
-    await onSelectChild(childId)
-    setCheckInChildId(childId)
-    setViewingChildId(childId)
-    setSession({ questionIndex: 0, answers: {} })
-    setView('checkin')
-  }
+    const childId = childList[0].id
+    queueMicrotask(() => {
+      void beginCheckIn(childId).then(() => onAutoStartHandled?.())
+    })
+  }, [pendingAutoStart, childList, onAutoStartHandled, beginCheckIn])
 
   async function handleStartCheckIn() {
     if (checkInGate.type === 'first_child') {

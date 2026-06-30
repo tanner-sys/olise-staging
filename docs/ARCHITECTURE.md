@@ -50,7 +50,7 @@ flowchart TB
     Router[Model router + fallback]
     Prompt[Context + system prompt]
     Safety[Safety pipeline]
-    RAG[RAG retrieval — planned]
+    RAG[RAG retrieval]
   end
 
   subgraph vendors [External model APIs]
@@ -64,7 +64,7 @@ flowchart TB
   brain --> Router
   Router --> Anthropic
   Router --> OpenAI
-  RAG -.->|planned| DB
+  RAG --> DB
   Safety --> Anthropic
 ```
 
@@ -89,16 +89,17 @@ Honest snapshot as of desktop **v0.1.3** and Tier 1 product polish:
 |------------|--------|
 | Supabase Auth (email, MFA in Settings) | **Shipped** |
 | Caregiver + child profiles, consent, RLS | **Shipped** |
-| Chat sessions + messages in Postgres | **Shipped** (client persists; brain does not own writes) |
+| Chat sessions + messages in Postgres | **Shipped** (brain-authoritative) |
 | SSE streaming chat via `olise-brain` | **Shipped** |
 | Personalized system prompt (caregiver + children + focus child) | **Shipped** |
-| Model chain with retry + fallback | **Shipped** (OpenAI tier needs keys on staging) |
-| Keyword crisis detection + fixed template + `crisis_events` log | **Shipped** (v1 stub) |
-| Programs, routines, check-ins UI | **Shipped** (migrating static → Supabase) |
-| RAG / pgvector retrieval in chat | **Schema only** — not wired in brain |
-| Haiku pre/post safety classifier | **Planned** |
-| Jailbreak / extraction blocking | **Planned** (tables exist) |
-| Eval harness (~110 scenarios, CI gate) | **Planned** |
+| Model chain with retry + fallback | **Shipped** |
+| Pre/post safety (regex + Haiku classifier) | **Shipped** |
+| Crisis UX + `crisis_events` + internal webhook | **Shipped** |
+| Jailbreak / extraction blocking | **Shipped** |
+| Clinical RAG (ingest, retrieve, cite, abstain) | **Shipped** (staging corpus seeded) |
+| Eval harness + CI gate | **Shipped** (31 scenarios, 5 buckets) |
+| `model_calls` + `safety_verdicts` telemetry | **Shipped** |
+| Programs, routines, check-ins UI | **Shipped** |
 | Child memories + conversation summaries | **Schema only** |
 | Deterministic assessment scoring | **Schema only** |
 
@@ -441,7 +442,7 @@ Chat flow today: `src/lib/chat.ts` → brain SSE; **client persists messages and
 |-------|-------|--------|
 | **0 — Foundation** | Auth, schema, staging, chat wire-up | **Complete** |
 | **1 — Tier 0–1 polish** | QA, desktop, MFA, UX | **Complete** |
-| **2 — Brain MVP** | Server turns, telemetry, safety, clinical RAG, eval gate | **In progress** |
+| **2 — Brain MVP** | Server turns, telemetry, safety, clinical RAG, eval gate | **In progress** (M1–M3 done; M4 v0 shipped) |
 | **3 — IP depth** | Biomarker, instruments, memories, cost routing | Planned |
 | **4 — Hardening** | Red-team, compliance maturity, scale | Planned |
 

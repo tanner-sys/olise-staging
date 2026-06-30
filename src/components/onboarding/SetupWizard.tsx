@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check, Shield, UserPlus } from 'lucide-react'
 import {
@@ -11,7 +11,7 @@ import { activeChildren, getPlaceholderChild, setActiveChild } from '../../lib/c
 import { ensureChildChatSession } from '../../lib/chatStorage'
 import { startTotpEnrollment, clearUnverifiedTotpFactors } from '../../lib/mfa'
 import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 import '../auth/AuthLayout.css'
 import '../ProgramRunner.css'
 import './SetupWizard.css'
@@ -24,7 +24,7 @@ export function SetupWizard() {
   const returnTo = (location.state as { returnTo?: string } | null)?.returnTo
   const { user, children, refreshProfile, refreshChildren } = useAuth()
   const [step, setStep] = useState<WizardStep>('mfa')
-  const [childCount, setChildCount] = useState(0)
+  const childCount = activeChildren(children).filter((child) => !child.is_placeholder).length
   const [displayName, setDisplayName] = useState('')
   const [ageBand, setAgeBand] = useState<AgeBand>('6_8')
   const [conditions, setConditions] = useState<ChildCondition[]>([])
@@ -36,10 +36,6 @@ export function SetupWizard() {
   const steps: WizardStep[] = ['mfa', 'add-child', 'another-child', 'done']
   const stepIndex = steps.indexOf(step)
   const progressPercent = Math.round(((stepIndex + 1) / steps.length) * 100)
-
-  useEffect(() => {
-    setChildCount(activeChildren(children).filter((child) => !child.is_placeholder).length)
-  }, [children])
 
   function toggleCondition(value: ChildCondition) {
     setConditions((prev) =>

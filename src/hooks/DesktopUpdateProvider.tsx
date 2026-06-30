@@ -1,7 +1,5 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -13,31 +11,15 @@ import {
   installDesktopUpdate,
   isDesktopUpdaterAvailable,
   updateToInfo,
-  type DesktopUpdateInfo,
-  type DesktopUpdateProgress,
 } from '../platform/updater'
+import { DesktopUpdateContext, type DesktopUpdateContextValue } from './desktopUpdateContext'
 
 const CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000
 
-export type DesktopUpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'error'
-
-type DesktopUpdateContextValue = {
-  enabled: boolean
-  status: DesktopUpdateStatus
-  updateInfo: DesktopUpdateInfo | null
-  progress: DesktopUpdateProgress | null
-  error: string | null
-  updateAvailable: boolean
-  refresh: () => Promise<void>
-  install: () => Promise<void>
-}
-
-const DesktopUpdateContext = createContext<DesktopUpdateContextValue | null>(null)
-
 function useDesktopUpdateState(): DesktopUpdateContextValue {
-  const [status, setStatus] = useState<DesktopUpdateStatus>('idle')
-  const [updateInfo, setUpdateInfo] = useState<DesktopUpdateInfo | null>(null)
-  const [progress, setProgress] = useState<DesktopUpdateProgress | null>(null)
+  const [status, setStatus] = useState<DesktopUpdateContextValue['status']>('idle')
+  const [updateInfo, setUpdateInfo] = useState<DesktopUpdateContextValue['updateInfo']>(null)
+  const [progress, setProgress] = useState<DesktopUpdateContextValue['progress']>(null)
   const [error, setError] = useState<string | null>(null)
   const updateRef = useRef<Update | null>(null)
   const enabled = isDesktopUpdaterAvailable()
@@ -78,12 +60,18 @@ function useDesktopUpdateState(): DesktopUpdateContextValue {
   useEffect(() => {
     if (!enabled) return
 
-    void refresh()
+    const timeout = window.setTimeout(() => {
+      void refresh()
+    }, 0)
+
     const interval = window.setInterval(() => {
       void refresh()
     }, CHECK_INTERVAL_MS)
 
-    return () => window.clearInterval(interval)
+    return () => {
+      window.clearTimeout(timeout)
+      window.clearInterval(interval)
+    }
   }, [enabled, refresh])
 
   return {
@@ -101,21 +89,4 @@ function useDesktopUpdateState(): DesktopUpdateContextValue {
 export function DesktopUpdateProvider({ children }: { children: ReactNode }) {
   const value = useDesktopUpdateState()
   return <DesktopUpdateContext.Provider value={value}>{children}</DesktopUpdateContext.Provider>
-}
-
-export function useDesktopUpdate(): DesktopUpdateContextValue {
-  const context = useContext(DesktopUpdateContext)
-  if (!context) {
-    return {
-      enabled: false,
-      status: 'idle',
-      updateInfo: null,
-      progress: null,
-      error: null,
-      updateAvailable: false,
-      refresh: async () => {},
-      install: async () => {},
-    }
-  }
-  return context
 }

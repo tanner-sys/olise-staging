@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import { AuthProvider } from './context/AuthContext'
 import { AppRouter } from './app/AppRouter'
-import { DesktopUpdateProvider } from './hooks/useDesktopUpdate'
+import { DesktopUpdateProvider } from './hooks/DesktopUpdateProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

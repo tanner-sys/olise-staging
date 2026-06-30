@@ -17,8 +17,18 @@ export function useRoutines() {
   }, [])
 
   useEffect(() => {
-    void refresh()
-  }, [refresh])
+    let active = true
+    void (async () => {
+      const result = await fetchRoutines()
+      if (!active) return
+      setRoutines(result.data)
+      setError(result.error)
+      setLoading(false)
+    })()
+    return () => {
+      active = false
+    }
+  }, [])
 
   return { routines, loading, error, refresh }
 }

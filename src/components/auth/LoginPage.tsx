@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { Mail } from 'lucide-react'
 import { isSupabaseConfigured, supabase } from '../../lib/supabase'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 import { AuthConfigWarning, AuthLayout } from './AuthLayout'
 
 const PENDING_EMAIL_KEY = 'pendingVerificationEmail'

@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { isSupabaseConfigured } from '../lib/supabase'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { ConsentModal } from '../components/auth/ConsentModal'
 import { LoginPage, VerifyEmailPage, CheckEmailPage } from '../components/auth/LoginPage'
 import { SignUpPage } from '../components/auth/SignUpPage'

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from './useAuth'
 
 export type ChatSession = {
   id: string
@@ -13,7 +13,7 @@ export type ChatSession = {
 export function useChatSessions() {
   const { user } = useAuth()
   const [sessions, setSessions] = useState<ChatSession[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(user))
 
   const refresh = useCallback(async () => {
     if (!supabase || !user) {
@@ -22,6 +22,7 @@ export function useChatSessions() {
       return
     }
 
+    setLoading(true)
     const { data, error } = await supabase
       .from('chat_sessions')
       .select('id, title, child_id, created_at, updated_at')
@@ -34,8 +35,33 @@ export function useChatSessions() {
   }, [user])
 
   useEffect(() => {
-    void refresh()
-  }, [refresh])
+    if (!user) {
+      queueMicrotask(() => {
+        setSessions([])
+        setLoading(false)
+      })
+      return
+    }
+
+    let active = true
+    void (async () => {
+      if (!supabase) return
+      const { data, error } = await supabase
+        .from('chat_sessions')
+        .select('id, title, child_id, created_at, updated_at')
+        .eq('caregiver_id', user.id)
+        .order('updated_at', { ascending: false })
+        .limit(30)
+
+      if (!active) return
+      if (!error && data) setSessions(data as ChatSession[])
+      setLoading(false)
+    })()
+
+    return () => {
+      active = false
+    }
+  }, [user])
 
   const createSession = useCallback(
     async (childId?: string | null) => {

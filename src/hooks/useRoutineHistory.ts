@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from './useAuth'
 import { activeChildren, resolveCheckInChildId } from '../lib/children'
 import { loadRoutineHistory, saveCheckInEntry } from '../lib/routineHistory'
 import type { CheckInEntry } from '../types/routine'
@@ -15,17 +15,12 @@ export function useRoutineHistory() {
   const loadChildId = childList.length > 1 ? null : resolvedChildId
 
   const [history, setHistory] = useState<CheckInEntry[]>([])
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(!user)
 
   useEffect(() => {
-    if (!user) {
-      setHistory([])
-      setReady(true)
-      return
-    }
+    if (!user) return
 
     let cancelled = false
-    setReady(false)
 
     void loadRoutineHistory(user.id, loadChildId).then((data) => {
       if (!cancelled) {
@@ -114,7 +109,7 @@ export function useRoutineHistory() {
   )
 
   return {
-    history,
+    history: user ? history : [],
     ready,
     addEntry,
     getEntriesForRoutine,

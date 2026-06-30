@@ -10,7 +10,7 @@ import {
   SlidersHorizontal,
   User,
 } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { getPlatform } from '../platform/detect'
 import { displayChildName } from '../lib/children'
 import { DesktopUpdateButton } from './desktop/DesktopUpdateButton'

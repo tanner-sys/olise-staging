@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Shield } from 'lucide-react'
 import type { MfaEnrollment } from '../../lib/mfa'
 import { markProfileMfaEnrolled, verifyTotpEnrollment } from '../../lib/mfa'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 import './MfaEnrollPanel.css'
 
 type MfaEnrollPanelProps = {

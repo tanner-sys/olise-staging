@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from './useAuth'
 import { loadProgramProgress, saveProgramProgress } from '../lib/programProgress'
 import type { ProgramProgress } from '../types/program'
 
@@ -12,17 +12,12 @@ export function useProgramProgress() {
   const childId = profile?.active_child_id ?? null
 
   const [programProgress, setProgramProgress] = useState<Record<string, ProgramProgress>>({})
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(!user)
 
   useEffect(() => {
-    if (!user) {
-      setProgramProgress({})
-      setReady(true)
-      return
-    }
+    if (!user) return
 
     let cancelled = false
-    setReady(false)
 
     void loadProgramProgress(user.id, childId).then((data) => {
       if (!cancelled) {
@@ -74,5 +69,11 @@ export function useProgramProgress() {
     [programProgress],
   )
 
-  return { programProgress, ready, ensureProgram, updateProgress, getProgress }
+  return {
+    programProgress: user ? programProgress : {},
+    ready,
+    ensureProgram,
+    updateProgress,
+    getProgress,
+  }
 }

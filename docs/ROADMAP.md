@@ -110,10 +110,12 @@ See [ARCHITECTURE.md §5](./ARCHITECTURE.md) for diagrams and SSE event types.
 
 **Engineering (required):**
 
-- [ ] M1–M4 complete on staging  
-- [ ] Eval suite green (expanded crisis/jailbreak buckets)  
-- [ ] Server-authoritative messages + telemetry on every turn  
-- [ ] Clinical RAG cite-or-abstain working  
+- [x] M1 — server-authoritative messages + telemetry on staging
+- [x] M2 — pre/post safety + crisis UX + internal alerts
+- [x] M3 — clinical RAG ingest, retrieve, cite, abstain (staging corpus v1)
+- [x] M4 v0 — eval harness + CI gate (31 scenarios, 5 buckets)
+- [ ] M4 full — expand to ~110 scenarios + red-team seed
+- [ ] Eval suite green on every deploy (expand citation/abstain coverage)
 
 **Legal / clinical (required before prod; parallel with beta prep):**
 

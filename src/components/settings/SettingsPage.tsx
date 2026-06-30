@@ -1,7 +1,7 @@
 import { ArrowLeft, CreditCard, LogOut, Shield, UserPlus } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 import { AGE_BANDS } from '../../lib/constants'
 import {
   activeChildren,
@@ -27,10 +27,9 @@ import '../auth/AuthLayout.css'
 import '../onboarding/SetupWizard.css'
 import {
   ChildProfileForm,
-  childToFormValues,
-  emptyChildFormValues,
   type ChildFormValues,
 } from './ChildProfileForm'
+import { childToFormValues, emptyChildFormValues } from './childFormUtils'
 import { MfaEnrollPanel } from './MfaEnrollPanel'
 import './SettingsPage.css'
 
@@ -87,7 +86,7 @@ export function SettingsPage() {
       : undefined
 
   useEffect(() => {
-    setAccountName(profile?.display_name ?? '')
+    queueMicrotask(() => setAccountName(profile?.display_name ?? ''))
   }, [profile?.display_name])
 
   useEffect(() => {

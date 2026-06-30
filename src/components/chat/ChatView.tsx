@@ -1,7 +1,7 @@
 import { AlertCircle, ArrowDown, ArrowUp, MessageSquare, Plus } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 import { getAccessToken } from '../../lib/accessToken'
 import { streamChatMessage } from '../../lib/chat'
 import {

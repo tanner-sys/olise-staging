@@ -1,7 +1,6 @@
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -11,7 +10,7 @@ import type { Session, User } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import type { CaregiverProfile, ChildProfile } from '../types/database'
 
-type AuthContextValue = {
+export type AuthContextValue = {
   loading: boolean
   session: Session | null
   user: User | null
@@ -28,6 +27,9 @@ type AuthContextValue = {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
+
+export { AuthContext }
+export type { AuthContextValue }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
@@ -58,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setProfile(data)
     setProfileError(null)
-  }, [session?.user])
+  }, [session])
 
   const refreshChildren = useCallback(async () => {
     if (!supabase || !session?.user) {
@@ -82,11 +84,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setChildProfiles(data ?? [])
     setChildrenLoadError(null)
-  }, [session?.user])
+  }, [session])
 
   useEffect(() => {
     if (!supabase) {
-      setLoading(false)
+      queueMicrotask(() => setLoading(false))
       return
     }
 
@@ -113,13 +115,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!session?.user) {
-      setProfile(null)
-      setChildProfiles([])
+      queueMicrotask(() => {
+        setProfile(null)
+        setChildProfiles([])
+      })
       return
     }
 
-    void refreshProfile()
-    void refreshChildren()
+    queueMicrotask(() => {
+      void refreshProfile()
+      void refreshChildren()
+    })
   }, [session?.user, refreshProfile, refreshChildren])
 
   const signOut = useCallback(async () => {
@@ -193,12 +199,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) {
-    throw new Error('useAuth must be used within AuthProvider')
-  }
-  return ctx
 }

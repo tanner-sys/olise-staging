@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Sidebar } from '../components/Sidebar'
 import { ShellChrome } from '../components/ShellChrome'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { useChatSessions } from '../hooks/useChatSessions'
 import { usePrograms } from '../hooks/usePrograms'
 import { useRoutines } from '../hooks/useRoutines'
@@ -137,7 +137,8 @@ export default function App() {
   useEffect(() => {
     if (!activeChatSessionId) return
     const session = chatSessions.find((s) => s.id === activeChatSessionId)
-    if (session) setChatScopeChildId(session.child_id)
+    if (!session) return
+    queueMicrotask(() => setChatScopeChildId(session.child_id))
   }, [activeChatSessionId, chatSessions])
 
   useEffect(() => {
