@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { ChatMessage } from '../types/chat'
+import type { ChatCitation, ChatMessage } from '../types/chat'
 
 export async function loadSessionMessages(sessionId: string): Promise<ChatMessage[]> {
   if (!supabase) return []
@@ -16,7 +16,35 @@ export async function loadSessionMessages(sessionId: string): Promise<ChatMessag
     return []
   }
 
-  return (data ?? []) as ChatMessage[]
+  const messages = (data ?? []) as ChatMessage[]
+  const assistantIds = messages.filter((m) => m.role === 'assistant').map((m) => m.id)
+  if (assistantIds.length === 0) return messages
+
+  const { data: citationRows, error: citationError } = await supabase
+    .from('message_citations')
+    .select('message_id, citation_title, document_version')
+    .in('message_id', assistantIds)
+
+  if (citationError) {
+    console.error('Failed to load citations', citationError)
+    return messages
+  }
+
+  const byMessage = new Map<string, ChatCitation[]>()
+  for (const row of citationRows ?? []) {
+    const messageId = row.message_id as string
+    const list = byMessage.get(messageId) ?? []
+    list.push({
+      citationTitle: row.citation_title as string,
+      documentVersion: row.document_version as string,
+    })
+    byMessage.set(messageId, list)
+  }
+
+  return messages.map((message) => ({
+    ...message,
+    citations: byMessage.get(message.id),
+  }))
 }
 export async function touchSession(sessionId: string, title?: string): Promise<void> {
   if (!supabase) return

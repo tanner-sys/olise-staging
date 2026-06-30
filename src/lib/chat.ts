@@ -29,6 +29,13 @@ export type ChatStreamEvent =
   | { type: 'blocked'; code: string; message: string }
   | { type: 'replace'; content: string; reason: string }
   | {
+      type: 'citation'
+      chunkId: string
+      citationTitle: string
+      documentId: string
+      documentVersion: string
+    }
+  | {
       type: 'done'
       userMessageId: string
       assistantMessageId: string
@@ -142,6 +149,14 @@ export async function streamChatMessage(
             type: 'replace',
             content: String(data.content ?? ''),
             reason: String(data.reason ?? 'post_safety'),
+          })
+        } else if (eventType === 'citation') {
+          onEvent({
+            type: 'citation',
+            chunkId: String(data.chunkId ?? ''),
+            citationTitle: String(data.citationTitle ?? ''),
+            documentId: String(data.documentId ?? ''),
+            documentVersion: String(data.documentVersion ?? '1'),
           })
         } else if (eventType === 'done') {
           onEvent({

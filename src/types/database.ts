@@ -252,6 +252,21 @@ export type Database = {
         Update: never
         Relationships: []
       }
+      message_citations: {
+        Row: {
+          id: string
+          message_id: string
+          caregiver_id: string
+          chunk_id: string
+          citation_title: string
+          document_id: string
+          document_version: string
+          created_at: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: {

@@ -11,7 +11,7 @@ import {
   type ActiveCrisis,
 } from '../../lib/crisisStorage'
 import { loadSessionMessages } from '../../lib/chatStorage'
-import type { ChatMessage } from '../../types/chat'
+import type { ChatCitation, ChatMessage } from '../../types/chat'
 import { StatePanel } from '../state/StatePanel'
 import { ChatMessageBody } from './ChatMessageBody'
 import { CrisisCard } from './CrisisCard'
@@ -148,6 +148,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
       let isBlockedResponse = false
       let doneUserMessageId = ''
       let doneAssistantMessageId = ''
+      let streamingCitations: ChatCitation[] = []
 
       await streamChatMessage(trimmed, accessToken, sessionId, clientMessageId, (event) => {
         if (event.type === 'token') {
@@ -199,6 +200,17 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
           setMessages((prev) =>
             prev.map((m) => (m.id === 'streaming' ? { ...m, blocked: true } : m)),
           )
+        } else if (event.type === 'citation') {
+          const citation: ChatCitation = {
+            citationTitle: event.citationTitle,
+            documentVersion: event.documentVersion,
+          }
+          streamingCitations = [...streamingCitations, citation]
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === 'streaming' ? { ...m, citations: streamingCitations } : m,
+            ),
+          )
         } else if (event.type === 'done') {
           doneUserMessageId = event.userMessageId
           doneAssistantMessageId = event.assistantMessageId
@@ -229,6 +241,7 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
                 content: assistantContent,
                 crisis: isCrisisResponse || m.crisis,
                 blocked: isBlockedResponse || m.blocked,
+                citations: streamingCitations.length > 0 ? streamingCitations : m.citations,
               }
             }
             return m
@@ -336,6 +349,16 @@ export function ChatView({ sessionId, onSessionActivity }: ChatViewProps) {
           >
             <div className="chat-message-bubble">
               <ChatMessageBody content={message.content} role={message.role} />
+              {message.role === 'assistant' && message.citations && message.citations.length > 0 && (
+                <ul className="chat-message-citations">
+                  {message.citations.map((citation, index) => (
+                    <li key={`${message.id}-citation-${index}`}>
+                      {citation.citationTitle}
+                      {citation.documentVersion ? ` (v${citation.documentVersion})` : ''}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         ))}
